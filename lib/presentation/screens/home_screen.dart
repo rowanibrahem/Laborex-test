@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_delivery_app/data/models/delivery_order.dart';
-import 'package:laborex_delivery_app/presentation/widgets.dart/delivery_order_card.dart';
+
+import '../../data/models/delivery_order.dart';
+import '../widgets.dart/delivery_order_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

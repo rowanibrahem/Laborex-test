@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_delivery_app/data/models/delivery_order.dart';
-import 'package:laborex_delivery_app/presentation/screens/scan_qr_screen.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laborex_distribution_app/data/models/delivery_order.dart';
 
 class DeliveryOrderCard extends StatefulWidget {
   final DeliveryOrder deliveryOrder;
@@ -36,10 +35,12 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
 
       if (!mounted) return;
 
-      setState(() {
-        _foundResult = false;
-        _scanBarcode = barcodeScanRes;
-      });
+      setState(
+        () {
+          _foundResult = false;
+          _scanBarcode = barcodeScanRes;
+        },
+      );
     }
   }
 

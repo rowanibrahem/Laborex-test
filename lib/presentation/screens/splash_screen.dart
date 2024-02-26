@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:laborex_delivery_app/presentation/screens/home_screen.dart';
+import 'package:laborex_distribution_app/presentation/screens/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
