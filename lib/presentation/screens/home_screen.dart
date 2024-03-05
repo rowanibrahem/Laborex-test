@@ -13,6 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+   final GlobalKey<RefreshIndicatorState> 
+   _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   late TabController topTabController;
   List<DeliveryOrderModel> stockList = [];
   List<DeliveryOrderModel> deliveredList = [];
@@ -22,7 +25,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   initState() {
     super.initState();
-    topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
+    topTabController = 
+    TabController(length: 3, initialIndex: 0, vsync: this);
     fetchData();
   }
 
@@ -47,6 +51,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+ Future<void> refreshData() async {
+  Future<void>.delayed(const Duration(seconds: 3));
+    await fetchData();
+  }
   @override
   Widget build(BuildContext context) {
     final laborexTitle = [
@@ -135,36 +143,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
       drawer: const Drawer(),
-      body: TabBarView(
-        controller: topTabController,
-        children: [
-          //*
-
-          ListView.builder(
-            itemCount: stockList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return DeliveryOrderCard(
-                deliveryOrder: stockList[index],
-              );
-            },
-          ),
-          ListView.builder(
-            itemCount: pendingList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return DeliveryOrderCard(
-                deliveryOrder: pendingList[index],
-              );
-            },
-          ),
-          ListView.builder(
-            itemCount: deliveredList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return DeliveryOrderCard(
-                deliveryOrder: deliveredList[index],
-              );
-            },
-          ),
-        ],
+      body: RefreshIndicator(
+         key: _refreshIndicatorKey,
+        color: Colors.white,
+        backgroundColor: Colors.blue,
+        onRefresh: refreshData,
+        child: TabBarView(
+          controller: topTabController,
+          children: [
+            //*
+        
+            ListView.builder(
+              itemCount: stockList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return DeliveryOrderCard(
+                  deliveryOrder: stockList[index],
+                );
+              },
+            ),
+            ListView.builder(
+              itemCount: pendingList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return DeliveryOrderCard(
+                  deliveryOrder: pendingList[index],
+                );
+              },
+            ),
+            ListView.builder(
+              itemCount: deliveredList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return DeliveryOrderCard(
+                  deliveryOrder: deliveredList[index],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
