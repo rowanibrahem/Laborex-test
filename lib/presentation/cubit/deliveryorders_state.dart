@@ -8,3 +8,11 @@ abstract class DeliveryordersState extends Equatable {
 }
 
 class DeliveryordersInitial extends DeliveryordersState {}
+
+class DeliveryordersScanning extends DeliveryordersState {}
+
+
+class LoadingData extends DeliveryordersState {}
+
+class LoadedData extends DeliveryordersState {}
+class ErrorOccured extends DeliveryordersState{}

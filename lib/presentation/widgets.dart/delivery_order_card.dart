@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/data/models/delivery_order.dart';
 
 class DeliveryOrderCard extends StatefulWidget {
-  final DeliveryOrder deliveryOrder;
+  final DeliveryOrderModel deliveryOrder;
 
   const DeliveryOrderCard({super.key, required this.deliveryOrder});
 
