@@ -6,8 +6,8 @@ part of 'delivery_order.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DeliveryOrder _$DeliveryOrderFromJson(Map<String, dynamic> json) =>
-    DeliveryOrder(
+DeliveryOrderModel _$DeliveryOrderFromJson(Map<String, dynamic> json) =>
+    DeliveryOrderModel(
       orderId: json['orderId'] as String,
       pharmacyName: json['pharmacyName'] as String,
       totalAmount: (json['totalAmount'] as num).toDouble(),
@@ -18,7 +18,7 @@ DeliveryOrder _$DeliveryOrderFromJson(Map<String, dynamic> json) =>
               DeliveryOrderStatus.inStock,
     );
 
-Map<String, dynamic> _$DeliveryOrderToJson(DeliveryOrder instance) =>
+Map<String, dynamic> _$DeliveryOrderToJson(DeliveryOrderModel instance) =>
     <String, dynamic>{
       'orderId': instance.orderId,
       'pharmacyName': instance.pharmacyName,

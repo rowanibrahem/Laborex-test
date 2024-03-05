@@ -10,7 +10,7 @@ enum DeliveryOrderStatus {
 }
 
 @JsonSerializable()
-class DeliveryOrder extends Equatable {
+class DeliveryOrderModel extends Equatable {
   final String orderId;
   final String pharmacyName;
   final int billNumber;
@@ -19,7 +19,7 @@ class DeliveryOrder extends Equatable {
 
   DeliveryOrderStatus status;
 
-  DeliveryOrder({
+  DeliveryOrderModel({
     required this.orderId,
     required this.pharmacyName,
     required this.totalAmount,
@@ -32,7 +32,7 @@ class DeliveryOrder extends Equatable {
     status = newStatus;
   }
 
-  factory DeliveryOrder.fromJson(Map<String, dynamic> json) =>
+  factory DeliveryOrderModel.fromJson(Map<String, dynamic> json) =>
       _$DeliveryOrderFromJson(json);
 
   Map<String, dynamic> toJson() => _$DeliveryOrderToJson(this);
