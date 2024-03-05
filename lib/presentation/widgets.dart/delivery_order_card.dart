@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_distribution_app/data/models/delivery_order.dart';
+import 'package:laborex_distribution_app/data/models/deliver_order_state/deliver_order_state.dart';
 
 class DeliveryOrderCard extends StatefulWidget {
-  final DeliveryOrderModel deliveryOrder;
+  final DeliverOrderStateModel deliveryOrder;
 
   const DeliveryOrderCard({super.key, required this.deliveryOrder});
 
@@ -58,22 +58,22 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
         children: [
           ListTile(
             title: Text(
-              widget.deliveryOrder.pharmacyName,
+              widget.deliveryOrder.clientName!,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 16.sp,
                   ),
             ),
             subtitle: Text(
-              widget.deliveryOrder.orderId,
+              '$widget.deliveryOrder.orderId!',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 14.sp,
                   ),
             ),
             // trailing: Text(deliveryOrder.status.toString()),
-            trailing: (widget.deliveryOrder.status ==
-                    DeliveryOrderStatus.inStock)
+            trailing: (widget.deliveryOrder.orderStatus ==
+                    'DeliveryOrderStatus.inStock')
                 ? InkWell(
                     child: Image.asset(
                       "assets/icons/qr_red.png",
@@ -82,7 +82,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
                       scanBarcodeNormal();
                     },
                   )
-                : (widget.deliveryOrder.status == DeliveryOrderStatus.pending)
+                : (widget.deliveryOrder.orderStatus == 'DeliveryOrderStatus.pending')
                     ? Image.asset("assets/icons/qr_green.png")
                     : Image.asset("assets/icons/green_arrow.png"),
           ),
@@ -94,7 +94,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
               children: [
                 BottomSection(
                   title: "رقم الفاتورة",
-                  subtitle: widget.deliveryOrder.itemsCount.toString(),
+                  subtitle: widget.deliveryOrder.billNumber.toString(),
                 ),
                 customDivider,
                 BottomSection(
@@ -104,7 +104,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
                 customDivider,
                 BottomSection(
                   title: "عدد الاصناف",
-                  subtitle: widget.deliveryOrder.totalAmount.toString(),
+                  subtitle: widget.deliveryOrder.numberOfItems.toString(),
                 ),
               ],
             ),
