@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_distribution_app/domain/repo.dart';
+import 'package:laborex_distribution_app/data/data%20source/api.dart';
+import 'package:laborex_distribution_app/data/models/deliver_order_state/deliver_order_state.dart';
 
-import '../../data/models/delivery_order.dart';
 import '../widgets/delivery_order_card.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,48 +14,82 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-   final GlobalKey<RefreshIndicatorState>
-   _refreshIndicatorKey =
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   late TabController topTabController;
-  List<DeliveryOrderModel> stockList = [];
-  List<DeliveryOrderModel> deliveredList = [];
-  List<DeliveryOrderModel> pendingList = [];
-  final DeliveryOrderRepository _deliveryOrderRepository =
-      DeliveryOrderRepository();
+  List<DeliverOrderStateModel> stockList = [];
+  List<DeliverOrderStateModel> deliveredList = [];
+  List<DeliverOrderStateModel> pendingList = [];
+  // final DeliveryOrderRepository _deliveryOrderRepository =
+  //     DeliveryOrderRepository();
   @override
   initState() {
     super.initState();
-    topTabController =
-    TabController(length: 3, initialIndex: 0, vsync: this);
+    topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
+    topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
     fetchData();
   }
 
-  Future<void> fetchData() async {
-    try {
-      List<DeliveryOrderModel> allDeliveryOrders =
-          await _deliveryOrderRepository.getDeliveryOrders();
+  // Future<void> fetchData() async {
+  //   try {
+  //     List<DeliverOrderStateModel> allDeliveryOrders =
+  //         await _deliveryOrderRepository.getDeliveryOrders();
 
-      stockList = allDeliveryOrders
-          .where((element) => element.status == DeliveryOrderStatus.inStock)
+  //     stockList = allDeliveryOrders
+  //         .where((element) =>
+  //             element.orderStatus == const DeliverOrderStateModel().orderStatus)
+  //         .toList();
+  //     deliveredList = allDeliveryOrders
+  //         .where((element) => element.orderStatus == const DeliverOrderStateModel().orderStatus)
+  //         .toList();
+  //     pendingList = allDeliveryOrders
+  //         .where((element) => element.orderStatus == const DeliverOrderStateModel().orderStatus)
+  //         .toList();
+
+  //     setState(() {}); // Trigger a rebuild with the fetched data
+  //   } catch (e) {
+  //     // Handle errors
+  //   }
+  // }
+
+  Future<void> fetchData() async {
+    final apiService =
+        ApiService('https://dms.ebdaa-business.com/api/v1/order/driver-orders');
+    try {
+      List<DeliverOrderStateModel> data = await apiService.fetchDataFromServer(
+          'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRFJJVkVSIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJkcml2ZXIgMSIsImlzcyI6IkRNU19BUFAiLCJhdWQiOiJETVNfQURNSU5JU1RSQVRJT04iLCJzdWIiOiIwNDQ0NDQ0NDQ0NCIsImlhdCI6MTcwOTU1NzY4MSwiZXhwIjoxNzEyMTQ5NjgxfQ.6Vd8IBY3tJZZhbofzbM-4rMQ5KtZ8JLAJNMQrcnXzGI');
+      print('Fetched data: $data');
+      //ORDER_CREATED,
+      //IN_PROGRESS,
+      //DELIVERED
+      stockList = data
+          .where((element) =>
+              element.orderStatus ==
+              'ORDER_CREATED') // replace 'stock' with the correct status for each list
           .toList();
-      deliveredList = allDeliveryOrders
-          .where((element) => element.status == DeliveryOrderStatus.delivered)
+      pendingList = data
+          .where((element) =>
+              element.orderStatus ==
+              'IN_PROGRESS') // replace 'pending' with the correct status for each list
           .toList();
-      pendingList = allDeliveryOrders
-          .where((element) => element.status == DeliveryOrderStatus.pending)
+      deliveredList = data
+          .where((element) =>
+              element.orderStatus ==
+              'DELIVERED') // replace 'delivered' with the correct status for each list
           .toList();
 
       setState(() {}); // Trigger a rebuild with the fetched data
-    } catch (e) {
+    } catch (error) {
       // Handle errors
+      print('Error: $error');
     }
   }
 
- Future<void> refreshData() async {
-  Future<void>.delayed(const Duration(seconds: 3));
+  Future<void> refreshData() async {
+    Future<void>.delayed(const Duration(seconds: 3));
     await fetchData();
   }
+
   @override
   Widget build(BuildContext context) {
     final laborexTitle = [
@@ -90,15 +125,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     ];
-
-
-
-
-
-
-
-
-
 
     return Scaffold(
       appBar: AppBar(
@@ -144,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       drawer: const Drawer(),
       body: RefreshIndicator(
-         key: _refreshIndicatorKey,
+        key: _refreshIndicatorKey,
         color: Colors.white,
         backgroundColor: Colors.blue,
         onRefresh: refreshData,
