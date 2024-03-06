@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/domain/repo.dart';
 
 import '../../data/models/delivery_order.dart';
-import '../widgets.dart/delivery_order_card.dart';
+import '../widgets/delivery_order_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-   final GlobalKey<RefreshIndicatorState> 
+   final GlobalKey<RefreshIndicatorState>
    _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   late TabController topTabController;
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   initState() {
     super.initState();
-    topTabController = 
+    topTabController =
     TabController(length: 3, initialIndex: 0, vsync: this);
     fetchData();
   }
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     ];
 
-    
+
 
 
 
@@ -152,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           controller: topTabController,
           children: [
             //*
-        
+
             ListView.builder(
               itemCount: stockList.length,
               itemBuilder: (BuildContext context, int index) {

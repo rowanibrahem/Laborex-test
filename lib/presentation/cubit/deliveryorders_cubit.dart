@@ -21,7 +21,7 @@ class DeliveryordersCubit extends Cubit<DeliveryordersState> {
     // emit(RefreshData());
   }
 
-  addOrder(String id) {}
+  addOrder(String id ,) {}
   Future<List<DeliveryOrderModel>> getAllData(String token) async {
     emit(LoadingData());
 

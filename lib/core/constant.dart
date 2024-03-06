@@ -1,3 +1,3 @@
 class Constant {
-  static const baseUrl = '';
+  static const baseUrl = 'https://dms.ebdaa-business.com/api/v1/';
 }
