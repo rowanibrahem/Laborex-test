@@ -1,11 +1,16 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:laborex_distribution_app/data/data%20source/local_repo.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
+import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
 import 'package:laborex_distribution_app/presentation/screens/home_screen.dart';
 import 'package:laborex_distribution_app/presentation/screens/login_screen.dart';
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
+
+import '../../data/data source/remote_repo.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,22 +21,39 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
+  //animation related variables
   late AnimationController _animationController;
   late Animation<double> _circleScaleAnimation;
   late Animation<double> _scaleAnimation;
   late Animation<double> _logoOpacityAnimation;
-  late SecureSharedPref prefs;
+  bool isAnimationFinished = false;
+  var animationDuration = 3000;
+
+  //*
+  late SecureSharedPref _prefs;
+  late RemoteRepo remoteRepo;
+  late LocalRepo _localRepo;
+  late Dio dio;
 
   @override
   void initState() {
     super.initState();
 
     animationsImplementation();
+
+    // _initLocalRepo();
   }
+
+  // void _initLocalRepo() async {
+  //   _prefs = await SecureSharedPref.getInstance();
+  //   _localRepo = LocalRepo(
+  //     secureSharedPreferences: _prefs,
+  //   );
+  // }
 
   void animationsImplementation() {
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 3000),
+      duration: Duration(milliseconds: animationDuration),
       vsync: this,
     );
 
@@ -54,22 +76,18 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Start the animation after a slight delay
-    Timer(const Duration(milliseconds: 500),
-        () => _animationController.forward());
+    // Start the animation instantly
+    Timer(
+      const Duration(milliseconds: 0),
+      () => _animationController.forward(),
+    );
 
     // Navigate to the next screen after the animation finishes
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(
-          const Duration(milliseconds: 1500),
-          () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
-            ),
-          ),
-        );
+        isAnimationFinished = true;
+        // setState(() {});
+        // TODO make sure doesn't navigate until animation finish
       }
     });
   }
@@ -80,45 +98,77 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  Future<String> token() async {
-    prefs = await SecureSharedPref.getInstance();
-    var token = await prefs.getString("token", isEncrypted: true);
-    return token ?? "";
+  Future<void> setDependencies(BuildContext ctx) async {
+    _prefs = await SecureSharedPref.getInstance();
+    _localRepo = LocalRepo(secureSharedPreferences: _prefs);
+    dio = Dio();
+    remoteRepo = RemoteRepo(
+      dio,
+    );
+    if (ctx.mounted) {
+      BlocProvider.of<AuthenticationCubit>(ctx)
+          .setDependencies(_localRepo, remoteRepo);
+      BlocProvider.of<DeliveryOrdersCubit>(ctx).setDependencies(remoteRepo);
+    }
+  }
+
+  Future<bool> isLogged(BuildContext ctx) async {
+//TODO Need revidsion
+    final isLoggedIn = await
+        BlocProvider.of<AuthenticationCubit>(ctx).isUserLoggedIn();
+
+    return isLoggedIn;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: token(),
+      future: setDependencies(context).then(
+        (value) => isLogged(context),
+      ),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return _buildSplashScreen();
         } else {
-          if (snapshot.data!.isEmpty) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LoginScreen(),
-              ),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => AuthenticationCubit.loggedIn(
-                    prefs,
-                    snapshot.data.toString(),
-                  ),
-                  child: const HomeScreen(),
-                ),
-              ),
-            );
-          }
+          Future.delayed(Duration(milliseconds: animationDuration))
+              .then((value) {
+            _buildNavigationRoute(snapshot, context);
+          });
         }
         return _buildSplashScreen();
       },
     );
+  }
+
+  void _buildNavigationRoute(
+    AsyncSnapshot<bool> snapshot,
+    BuildContext context,
+  ) async {
+    await Future.delayed(Duration.zero);
+
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      await Future.delayed(Duration(milliseconds: animationDuration));
+    }
+
+    if (snapshot.data == false) {
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        );
+      }
+    } else {
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildSplashScreen() => Scaffold(
@@ -132,9 +182,9 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context,)
-                        .colorScheme
-                        .primary, // Replace with your circle color
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary, // Replace with your circle color
                   ),
                 ),
               ),

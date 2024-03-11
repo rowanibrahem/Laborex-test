@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_distribution_app/data/models/deliver_order_state/deliver_order_state.dart';
+
+import '../../data/models/deliver_order_model.dart';
 
 class DeliveryOrderCard extends StatefulWidget {
-  final DeliverOrderStateModel deliveryOrder;
+  final DeliverOrderModel deliveryOrder;
 
   const DeliveryOrderCard({super.key, required this.deliveryOrder});
 
@@ -65,7 +66,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
                   ),
             ),
             subtitle: Text(
-              '$widget.deliveryOrder.orderId!',
+              widget.deliveryOrder.orderId.toString(),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 14.sp,
@@ -73,7 +74,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
             ),
             // trailing: Text(deliveryOrder.status.toString()),
             trailing: (widget.deliveryOrder.orderStatus ==
-                    'DeliveryOrderStatus.inStock')
+                    OrderStatus.inStock)
                 ? InkWell(
                     child: Image.asset(
                       "assets/icons/qr_red.png",
@@ -82,7 +83,8 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
                       scanBarcodeNormal();
                     },
                   )
-                : (widget.deliveryOrder.orderStatus == 'DeliveryOrderStatus.pending')
+                : (widget.deliveryOrder.orderStatus ==
+                        OrderStatus.inProgress)
                     ? Image.asset("assets/icons/qr_green.png")
                     : Image.asset("assets/icons/green_arrow.png"),
           ),
@@ -99,7 +101,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
                 customDivider,
                 BottomSection(
                   title: "التكلفة الكلية",
-                  subtitle: widget.deliveryOrder.billNumber.toString(),
+                  subtitle: widget.deliveryOrder.billTotalPrice.toString(),
                 ),
                 customDivider,
                 BottomSection(

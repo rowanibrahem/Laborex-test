@@ -1,10 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_distribution_app/data/data%20source/api.dart';
-import 'package:laborex_distribution_app/data/models/deliver_order_state/deliver_order_state.dart';
+import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
+import 'package:laborex_distribution_app/presentation/screens/login_screen.dart';
 
+import '../../data/models/deliver_order_model.dart';
+import '../cubit/authentication_cubit.dart';
+import '../cubit/delivery_orders_cubit.dart';
 import '../widgets/delivery_order_card.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,20 +18,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  late RemoteRepo remoteRepo;
+  late Dio _dio;
+
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  late TabController topTabController;
-  List<DeliverOrderStateModel> stockList = [];
-  List<DeliverOrderStateModel> deliveredList = [];
-  List<DeliverOrderStateModel> pendingList = [];
-  // final DeliveryOrderRepository _deliveryOrderRepository =
-  //     DeliveryOrderRepository();
+  late TabController _topTabController;
+  List<DeliverOrderModel> stockList = [];
+  List<DeliverOrderModel> deliveredList = [];
+  List<DeliverOrderModel> pendingList = [];
   @override
   initState() {
     super.initState();
-    topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
-    topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
-    fetchData();
+    _topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
+    if (context.mounted) {
+      BlocProvider.of<DeliveryOrdersCubit>(context).getOrders(
+        BlocProvider.of<AuthenticationCubit>(context).state.token!,
+      );
+    }
   }
 
   // Future<void> fetchData() async {
@@ -52,46 +60,63 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   //   }
   // }
 
-  Future<void> fetchData() async {
-    final apiService =
-        ApiService('https://dms.ebdaa-business.com/api/v1/order/driver-orders');
-    try {
-      List<DeliverOrderStateModel> data = await apiService.fetchDataFromServer(
-          'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRFJJVkVSIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJkcml2ZXIgMSIsImlzcyI6IkRNU19BUFAiLCJhdWQiOiJETVNfQURNSU5JU1RSQVRJT04iLCJzdWIiOiIwNDQ0NDQ0NDQ0NCIsImlhdCI6MTcwOTU1NzY4MSwiZXhwIjoxNzEyMTQ5NjgxfQ.6Vd8IBY3tJZZhbofzbM-4rMQ5KtZ8JLAJNMQrcnXzGI');
-      print('Fetched data: $data');
-      //ORDER_CREATED,
-      //IN_PROGRESS,
-      //DELIVERED
-      stockList = data
-          .where((element) =>
-              element.orderStatus ==
-              'ORDER_CREATED') // replace 'stock' with the correct status for each list
-          .toList();
-      pendingList = data
-          .where((element) =>
-              element.orderStatus ==
-              'IN_PROGRESS') // replace 'pending' with the correct status for each list
-          .toList();
-      deliveredList = data
-          .where((element) =>
-              element.orderStatus ==
-              'DELIVERED') // replace 'delivered' with the correct status for each list
-          .toList();
+  // Future<void> fetchData(BuildContext ctx) async {
+  //   //needed to make sure dio and apiService are initialized first
+  //   remoteRepo.token =
+  //       BlocProvider.of<AuthenticationCubit>(context).state.token;
 
-      setState(() {}); // Trigger a rebuild with the fetched data
-    } catch (error) {
-      // Handle errors
-      print('Error: $error');
-    }
-  }
+  //   Future<void>.delayed(
+  //     const Duration(
+  //       seconds: 0,
+  //     ),
+  //   );
+  //   try {
+  //     List<DeliverOrderModel> data = await remoteRepo.getOrders(
+  //       BlocProvider.of<AuthenticationCubit>(context).state.token!,
+  //     );
+  //     print('Fetched data: $data');
+  //     //ORDER_CREATED,
+  //     //IN_PROGRESS,
+  //     //DELIVERED
 
-  Future<void> refreshData() async {
-    Future<void>.delayed(const Duration(seconds: 3));
-    await fetchData();
+  //     stockList = data
+  //         .where((element) =>
+  //             element.orderStatus ==
+  //             'ORDER_CREATED') // replace 'stock' with the correct status for each list
+  //         .toList();
+  //     pendingList = data
+  //         .where((element) =>
+  //             element.orderStatus ==
+  //             'IN_PROGRESS') // replace 'pending' with the correct status for each list
+  //         .toList();
+  //     deliveredList = data
+  //         .where((element) =>
+  //             element.orderStatus ==
+  //             'DELIVERED') // replace 'delivered' with the correct status for each list
+  //         .toList();
+
+  //     setState(() {}); // Trigger a rebuild with the fetched data
+  //   } catch (error) {
+  //     // Handle errors
+  //     print('Error: $error');
+  //   }
+  // }
+
+  Future<void> refreshData(BuildContext ctx) async {
+    Future<void>.delayed(const Duration(seconds: 0));
+    BlocProvider.of<DeliveryOrdersCubit>(ctx).getOrders(
+      BlocProvider.of<AuthenticationCubit>(ctx).state.token!,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    stockList =
+        BlocProvider.of<DeliveryOrdersCubit>(context, listen: true).stockList;
+    deliveredList = BlocProvider.of<DeliveryOrdersCubit>(context, listen: true)
+        .deliveredList;
+    pendingList =
+        BlocProvider.of<DeliveryOrdersCubit>(context, listen: true).pendingList;
     final laborexTitle = [
       Padding(
         padding: EdgeInsets.symmetric(
@@ -126,84 +151,151 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100.h,
-        elevation: 4.r,
-        actions: laborexTitle,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(80.h),
-          child: TabBar(
-            controller: topTabController,
-            tabs: [
-              Tab(
-                child: Text(
-                  'المخزن',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+    return BlocListener<AuthenticationCubit, AuthenticationState>(
+      listener: (listenerCtx, state) {
+        if (state is LoggedOut) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (builderContext) => const LoginScreen(),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 100.h,
+          elevation: 4.r,
+          actions: laborexTitle,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(80.h),
+            child: TabBar(
+              controller: _topTabController,
+              tabs: [
+                Tab(
+                  child: Text(
+                    'المخزن',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Tab(
-                // text: 'جاري التوصيل',
-                child: Text(
-                  "جاري التوصيل",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+                Tab(
+                  // text: 'جاري التوصيل',
+                  child: Text(
+                    "جاري التوصيل",
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Tab(
-                child: Text(
-                  "مكتمل",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+                Tab(
+                  child: Text(
+                    "مكتمل",
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
+              ],
+            ),
+          ),
+        ),
+        //TODO add drawer
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                decoration: const BoxDecoration(),
+                child: Column(
+                  children: laborexTitle,
+                ),
               ),
+              ListTile(
+                title: const Text('تسجيل الخروج'),
+                onTap: () {
+                  BlocProvider.of<AuthenticationCubit>(context).logOut();
+                },
+              ),
+              // ListTile(
+              //   title: const Text('check token'),
+              //   onTap: () {
+              //     var token =
+              //         BlocProvider.of<AuthenticationCubit>(context).state.token;
+
+              //     log("token is $token");
+              //     BlocProvider.of<AuthenticationCubit>(context).token;
+              //   },
+              // ),
             ],
           ),
         ),
-      ),
-      drawer: const Drawer(),
-      body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        color: Colors.white,
-        backgroundColor: Colors.blue,
-        onRefresh: refreshData,
-        child: TabBarView(
-          controller: topTabController,
-          children: [
-            //*
-
-            ListView.builder(
-              itemCount: stockList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return DeliveryOrderCard(
-                  deliveryOrder: stockList[index],
-                );
-              },
-            ),
-            ListView.builder(
-              itemCount: pendingList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return DeliveryOrderCard(
-                  deliveryOrder: pendingList[index],
-                );
-              },
-            ),
-            ListView.builder(
-              itemCount: deliveredList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return DeliveryOrderCard(
-                  deliveryOrder: deliveredList[index],
-                );
-              },
-            ),
-          ],
+        body: RefreshIndicator(
+          key: _refreshIndicatorKey,
+          color: Colors.white,
+          backgroundColor: Colors.blue,
+          onRefresh: () => refreshData(context),
+          child: TabBarView(
+            controller: _topTabController,
+            children: [
+              if (BlocProvider.of<DeliveryOrdersCubit>(context, listen: true)
+                      .state
+                      .status ==
+                  "loading") ...[
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ] else
+                //*
+                ...[
+                (stockList.isEmpty)
+                    ? const Center(
+                        child: Text('لا يوجد طلبات هنا'),
+                      )
+                    : ListView.builder(
+                        itemCount: stockList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return DeliveryOrderCard(
+                            deliveryOrder: stockList[index],
+                          );
+                        },
+                      ),
+                (pendingList.isEmpty)
+                    ? const Center(
+                        child: Text('لا يوجد طلبات هنا'),
+                      )
+                    : ListView.builder(
+                        itemCount: pendingList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return DeliveryOrderCard(
+                            deliveryOrder: pendingList[index],
+                          );
+                        },
+                      ),
+                (deliveredList.isEmpty)
+                    ? const Center(
+                        child: Text('لا يوجد طلبات هنا'),
+                      )
+                    : ListView.builder(
+                        itemCount: deliveredList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return DeliveryOrderCard(
+                            deliveryOrder: deliveredList[index],
+                          );
+                        },
+                      ),
+              ]
+            ],
+          ),
         ),
       ),
     );

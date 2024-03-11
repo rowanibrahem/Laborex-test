@@ -1,43 +1,46 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:laborex_distribution_app/data/Repositories/local_repo.dart';
-import 'package:secure_shared_preferences/secure_shared_preferences.dart';
+import 'package:laborex_distribution_app/data/data%20source/local_repo.dart';
+import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 
 part 'authentication_state.dart';
 
 class AuthenticationCubit extends Cubit<AuthenticationState> {
-  AuthenticationCubit.loggedIn(
-    this.secureSharedPreferences,
-    this.token,
-  )   : localRepo = LocalRepo(secureSharedPreferences: secureSharedPreferences),
-        super(LoggedIn(
-          token: token,
+  LocalRepo? localRepo;
+  RemoteRepo? remoteRepo;
+  AuthenticationCubit()
+      : super(
+          AuthenticationInitial(),
+        );
+
+  AuthenticationCubit.loggedIn({
+    required this.token,
+    required this.localRepo,
+  }) : super(LoggedIn(
+          newToken: token,
         ));
 
-  AuthenticationCubit.loggedOut(
-    this.secureSharedPreferences,
-  )   : localRepo = LocalRepo(secureSharedPreferences: secureSharedPreferences),
-        super(
+  AuthenticationCubit.loggedOut({
+    required this.localRepo,
+  }) : super(
           LoggedOut(),
         );
 
-  SecureSharedPref secureSharedPreferences;
-  LocalRepo localRepo;
-
   String token = '';
+
+  void setDependencies(LocalRepo lRepo ,RemoteRepo rRepo) {
+    localRepo = lRepo;
+    remoteRepo = rRepo;
+  }
 
   Future<bool> isUserLoggedIn() async {
     if (token != '' && token.isNotEmpty) {
       return true;
     }
 
-    final isUserLoggedIn =
-        await secureSharedPreferences.getBool('isUserLoggedIn');
-    if (isUserLoggedIn != null && isUserLoggedIn) {
-      localRepo.getToken().then((value) {
-        token = value!;
-      });
-      emit(LoggedIn(token: token));
+    token = await localRepo?.getToken() ?? '';
+    if (token.isNotEmpty) {
+      emit(LoggedIn(newToken: token));
       return true;
     } else {
       emit(LoggedOut());
@@ -46,21 +49,37 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   Future<void> logUserIn(
-    String email,
+    String phoneNumber,
     String password,
   ) async {
+    emit(LoadingState());
+
+    // const hardcodedToken =
+    //     "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRFJJVkVSIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJkcml2ZXIgMSIsImlzcyI6IkRNU19BUFAiLCJhdWQiOiJETVNfQURNSU5JU1RSQVRJT04iLCJzdWIiOiIwNDQ0NDQ0NDQ0NCIsImlhdCI6MTcwOTk3NjA1MSwiZXhwIjoxNzEyNTY4MDUxfQ.73L1cbcvXPsU8uccwBDP6qgOV-8VYi6yz3ZWfcrbdqs";
+    // //   "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRFJJVkVSIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJkcml2ZXIgMSIsImlzcyI6IkRNU19BUFAiLCJhdWQiOiJETVNfQURNSU5JU1RSQVRJT04iLCJzdWIiOiIwNDQ0NDQ0NDQ0NCIsImlhdCI6MTcwOTU1NzY4MSwiZXhwIjoxNzEyMTQ5NjgxfQ.6Vd8IBY3tJZZhbofzbM-4rMQ5KtZ8JLAJNMQrcnXzGI";
     //TODO: Implement login logic
 
+    final newToken = await remoteRepo!.login(
+      phoneNumber,
+      password,
+    );
+
+    await localRepo!.addToken(
+      newToken,
+    );
+
+    token = newToken;
+
     emit(
-      const LoggedIn(
-        token:
-            'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRFJJVkVSIiwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJkcml2ZXIgMSIsImlzcyI6IkRNU19BUFAiLCJhdWQiOiJETVNfQURNSU5JU1RSQVRJT04iLCJzdWIiOiIwNDQ0NDQ0NDQ0NCIsImlhdCI6MTcwOTU1NzY4MSwiZXhwIjoxNzEyMTQ5NjgxfQ.6Vd8IBY3tJZZhbofzbM-4rMQ5KtZ8JLAJNMQrcnXzGI',
+      LoggedIn(
+        newToken: newToken,
       ),
     );
   }
 
-  Future<void> logUserOut() async {
-    localRepo.deleteToken();
+  Future<void> logOut() async {
+    token = '';
     emit(LoggedOut());
+    await localRepo?.deleteToken();
   }
 }

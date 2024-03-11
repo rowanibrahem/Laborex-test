@@ -1,7 +1,8 @@
 part of 'authentication_cubit.dart';
 
 sealed class AuthenticationState extends Equatable {
-  const AuthenticationState();
+  String? token;
+  AuthenticationState({this.token});
 
   @override
   List<Object> get props => [];
@@ -10,16 +11,14 @@ sealed class AuthenticationState extends Equatable {
 final class AuthenticationInitial extends AuthenticationState {}
 
 final class LoggedIn extends AuthenticationState {
-  const LoggedIn({
-    required this.token,
-  });
-
-  final String token;
+  LoggedIn({
+    required String newToken,
+  }) : super(token: newToken);
 
   @override
-  List<Object> get props => [token];
+  List<Object> get props => [token!];
 }
 
 final class LoggedOut extends AuthenticationState {}
 
-final class Loading extends AuthenticationState {}
+final class LoadingState extends AuthenticationState {}
