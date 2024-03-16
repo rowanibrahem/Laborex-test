@@ -11,7 +11,7 @@ class RemoteRepo {
   );
   set token(String? value) => token = value;
 
-  Future <String> login(String phoneNumber, String password) async {
+  Future<String> login(String phoneNumber, String password) async {
     try {
       final response = await _dio.post(
         Constants.loginUrl,
@@ -40,15 +40,7 @@ class RemoteRepo {
           },
         ),
       );
-      // final response = await _dio.getUri(
-      //   Uri.https("dms.ebdaa-business.com", 'api/v1/driver-orders'),
-      //   options: Options(
-      //     contentType: "application/json",
-      //     headers: {
-      //       'Authorization': "Bearer $token"
-      //     },
-      //   ),
-      // );
+
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
@@ -56,6 +48,58 @@ class RemoteRepo {
         return data.map((item) => DeliverOrderModel.fromMap(item)).toList();
       } else {
         throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
+
+  Future<String> startDelivery(String token, String orderId) async {
+    try {
+      final response = await _dio.patch(
+        '${Constants.deliveryStartUrl}$orderId',
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('${response.data}');
+      }
+    } catch (error) {
+      throw Exception('Error: $error');
+    }
+  }
+
+  Future<String> finishOrder(
+    String token,
+    String orderId,
+    String paymentType,
+    String returnType,
+    String description,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '${Constants.finishOrderUrl}$orderId',
+        data: {
+          "paymentType": paymentType,
+          "returnType": returnType,
+          "description": description,
+        },
+        options: Options(
+
+          headers: {
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('${response.data}');
       }
     } catch (error) {
       throw Exception('Error: $error');
