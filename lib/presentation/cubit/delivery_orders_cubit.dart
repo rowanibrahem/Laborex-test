@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 
 import '../../data/models/deliver_order_model.dart';
@@ -7,27 +8,28 @@ import '../../data/models/deliver_order_model.dart';
 part 'delivery_orders_state.dart';
 
 class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
-  RemoteRepo? remoteRepo;
+  RemoteRepo? _remoteRepo;
   DeliveryOrdersCubit({
-    this.remoteRepo,
-  }) : super(const DeliveryOrdersInitial());
+    RemoteRepo? remoteRepo,
+  })  : _remoteRepo = remoteRepo,
+        super(const DeliveryOrdersInitial());
   // DeliveryOrdersCubit({
   //   required this.remoteRepo,
   // }) : super(const DeliveryOrdersInitial());
 
-  List<DeliverOrderModel> orders = [];
+  final List<DeliverOrderModel> _orders = [];
   List<DeliverOrderModel> stockList = [];
   List<DeliverOrderModel> deliveredList = [];
   List<DeliverOrderModel> pendingList = [];
 
   void setDependencies(RemoteRepo repo) {
-    remoteRepo = repo;
+    _remoteRepo = repo;
   }
 
   void startScan() {
     emit(const DeliveryOrdersScanning());
 
-    ///TODO:IMPLEMENT FUN
+    ///TODO:IMPLEMENT scanning
     String id = 'barcode.code';
     addOrder(id);
     // emit(ScanedOrder());
@@ -45,14 +47,17 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
   //   return indexOfBarcode;
   // }
 
-  Future<void> getOrders(String token) async {
+  Future<void> getOrders({
+    required String token,
+    required void Function(String) showSnackBar,
+  }) async {
     //needed to make sure dio and apiService are initialized first
 
     emit(const LoadingState());
 
     try {
       List<DeliverOrderModel> allDeliveryOrders =
-          await remoteRepo!.getOrders(token);
+          await _remoteRepo!.getOrders(token);
       //*
       stockList = allDeliveryOrders
           .where((element) => element.orderStatus == OrderStatus.inStock)
@@ -71,8 +76,51 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
         pendingList: pendingList,
       ));
     } catch (e) {
-      //TODO handle error routine
-      emit(const ErrorOccurred());
+      showSnackBar(e.toString());
+
+      emit(const DeliveryOrdersInitial());
     }
+  }
+
+  Future<void> inStockAction({
+    required String token,
+    required String id,
+    required void Function(String) showSnackBar,
+  }) async {
+    emit(const LoadingState());
+    try {
+      final response = await _remoteRepo!.startDelivery(token, id);
+
+      showSnackBar(response);
+    } catch (e) {
+      showSnackBar(e.toString());
+    }
+    getOrders(token: token, showSnackBar: showSnackBar);
+  }
+
+  Future<void> deliveredAction({
+    required String token,
+    required String id,
+    required String paymentType,
+    required String returnType,
+    required String description,
+    required void Function(String) showSnackBar,
+  }) async {
+    emit(const LoadingState());
+    try {
+      final response = await _remoteRepo!.finishOrder(
+        token,
+        id,
+        paymentType,
+        returnType,
+        description,
+      );
+      showSnackBar(response);
+
+    } catch (e) {
+      showSnackBar(e.toString());
+    }
+
+    getOrders(token: token, showSnackBar: showSnackBar);
   }
 }

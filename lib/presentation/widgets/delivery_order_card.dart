@@ -1,49 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../data/models/deliver_order_model.dart';
 
 class DeliveryOrderCard extends StatefulWidget {
   final DeliverOrderModel deliveryOrder;
+  void Function(String) onTapAction;
 
-  const DeliveryOrderCard({super.key, required this.deliveryOrder});
+  DeliveryOrderCard(
+      {super.key, required this.deliveryOrder, required this.onTapAction});
 
   @override
   State<DeliveryOrderCard> createState() => _DeliveryOrderCardState();
 }
 
 class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
-  String _scanBarcode = 'Unknown';
-  bool _foundResult = false;
-
-  Future<void> scanBarcodeNormal() async {
-    String barcodeScanRes;
-
-    try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.QR);
-      print(barcodeScanRes);
-      if (!mounted) return;
-
-      setState(() {
-        barcodeScanRes != '-1' ? _foundResult = true : _foundResult = false;
-
-        _scanBarcode = barcodeScanRes;
-      });
-    } catch (e) {
-      barcodeScanRes = 'Failed : ${e.toString()}';
-
-      if (!mounted) return;
-
-      setState(
-        () {
-          _foundResult = false;
-          _scanBarcode = barcodeScanRes;
-        },
-      );
-    }
-  }
+  final String _scanBarcode = 'Unknown';
+  final bool _foundResult = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,36 +31,34 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
       child: Column(
         children: [
           ListTile(
-            title: Text(
-              widget.deliveryOrder.clientName!,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
-                  ),
-            ),
-            subtitle: Text(
-              widget.deliveryOrder.orderId.toString(),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 14.sp,
-                  ),
-            ),
-            // trailing: Text(deliveryOrder.status.toString()),
-            trailing: (widget.deliveryOrder.orderStatus ==
-                    OrderStatus.inStock)
-                ? InkWell(
-                    child: Image.asset(
-                      "assets/icons/qr_red.png",
+              title: Text(
+                widget.deliveryOrder.clientName!,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
                     ),
-                    onTap: () {
-                      scanBarcodeNormal();
-                    },
-                  )
-                : (widget.deliveryOrder.orderStatus ==
-                        OrderStatus.inProgress)
-                    ? Image.asset("assets/icons/qr_green.png")
-                    : Image.asset("assets/icons/green_arrow.png"),
-          ),
+              ),
+              subtitle: Text(
+                widget.deliveryOrder.orderId.toString(),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 14.sp,
+                    ),
+              ),
+              // trailing: Text(deliveryOrder.status.toString()),
+              trailing: InkWell(
+                child: (widget.deliveryOrder.orderStatus == OrderStatus.inStock)
+                    ? Image.asset(
+                        "assets/icons/qr_red.png",
+                      )
+                    : (widget.deliveryOrder.orderStatus ==
+                            OrderStatus.inProgress)
+                        ? Image.asset("assets/icons/qr_green.png")
+                        : Image.asset("assets/icons/green_arrow.png"),
+                onTap: () {
+                  widget.onTapAction(widget.deliveryOrder.orderId.toString());
+                },
+              )),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: Row(
