@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:laborex_distribution_app/core/errors/failure.dart';
 
 import '../../core/constants.dart';
 import '../models/deliver_order_model.dart';
@@ -41,7 +42,6 @@ class RemoteRepo {
         ),
       );
 
-
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
 
@@ -50,8 +50,11 @@ class RemoteRepo {
         throw Exception('Failed to load data');
       }
     } catch (error) {
-      throw Exception('Error: $error');
-    }
+if (error is DioException) {
+        throw ServerFailure.fromDioError(error);
+      } else {
+        rethrow;
+      }    }
   }
 
   Future<String> startDelivery(String token, String orderId) async {
@@ -70,7 +73,12 @@ class RemoteRepo {
         throw Exception('${response.data}');
       }
     } catch (error) {
-      throw Exception('Error: $error');
+      if (error is DioException) {
+        throw ServerFailure.fromDioError(error);
+      } else {
+        rethrow;
+      }
+      //throw Exception('Error: $error');
     }
   }
 
@@ -90,7 +98,6 @@ class RemoteRepo {
           "description": description,
         },
         options: Options(
-
           headers: {
             "Authorization": "Bearer $token",
           },
@@ -102,7 +109,11 @@ class RemoteRepo {
         throw Exception('${response.data}');
       }
     } catch (error) {
-      throw Exception('Error: $error');
+      if (error is DioException) {
+        throw ServerFailure.fromDioError(error);
+      } else {
+        rethrow;
+      }
     }
   }
 }
