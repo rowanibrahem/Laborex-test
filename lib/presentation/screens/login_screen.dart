@@ -122,12 +122,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: (_isLoading)
                       ? null
-                      : () {
-                          if (formkey.currentState!.validate()) {
-                            BlocProvider.of<AuthenticationCubit>(context)
-                                .logUserIn(
-                              _phoneNumberController.text,
-                              _passwordController.text,
+                      : () async {
+                          try {
+                            if (formkey.currentState!.validate()) {
+                              await BlocProvider.of<AuthenticationCubit>(
+                                      context)
+                                  .logUserIn(
+                                _phoneNumberController.text,
+                                _passwordController.text,
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'حدث خطأ, يرجى المحاولة لاحقا  ${e.toString()}'),
+                              ),
                             );
                           }
                         },
