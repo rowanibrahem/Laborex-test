@@ -37,25 +37,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
     if (context.mounted) {
       BlocProvider.of<DeliveryOrdersCubit>(context).getOrders(
-    token:   BlocProvider.of<AuthenticationCubit>(context).state.token!,
-showSnackBar: showSnackBar     );
+          token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+          showSnackBar: showSnackBar);
     }
   }
 
-
   void showSnackBar(String message) {
-    if (context.mounted)
-   { ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );}
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+    }
   }
+
   Future<void> refreshData(BuildContext ctx) async {
     Future<void>.delayed(const Duration(seconds: 0));
     BlocProvider.of<DeliveryOrdersCubit>(ctx).getOrders(
       token: BlocProvider.of<AuthenticationCubit>(ctx).state.token!,
-showSnackBar: showSnackBar,    );
+      showSnackBar: showSnackBar,
+    );
   }
 
   @override
@@ -180,12 +182,13 @@ showSnackBar: showSnackBar,    );
                             onTapAction: (itemId) =>
                                 BlocProvider.of<DeliveryOrdersCubit>(context)
                                     .inStockAction(
-                                        token: BlocProvider.of<
-                                                AuthenticationCubit>(context)
-                                            .state
-                                            .token!,
-                                        id: itemId,
-                                      showSnackBar: showSnackBar,),
+                              token:
+                                  BlocProvider.of<AuthenticationCubit>(context)
+                                      .state
+                                      .token!,
+                              id: itemId,
+                              showSnackBar: showSnackBar,
+                            ),
                           );
                         },
                       ),
@@ -221,20 +224,20 @@ showSnackBar: showSnackBar,    );
                                       BlocProvider.of<DeliveryOrdersCubit>(
                                               context)
                                           .deliveredAction(
-                                      token:   BlocProvider.of<AuthenticationCubit>(
-                                                context)
+                                        token: BlocProvider.of<
+                                                AuthenticationCubit>(context)
                                             .state
                                             .token!,
-                                     id:    itemId,
-                                       paymentType:  paymentType,
-                                      returnType:   returnType,
-                                      description:   description,
-                                     showSnackBar: showSnackBar,
-
+                                        id: itemId,
+                                        paymentType: paymentType,
+                                        returnType: returnType,
+                                        description: description,
+                                        showSnackBar: showSnackBar,
                                       );
                                     },
                                   );
                                 },
+
                               );
                             },
                           );
