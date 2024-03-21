@@ -5,11 +5,11 @@ import 'package:laborex_distribution_app/presentation/screens/home_screen.dart';
 import '../../core/enums.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-   CustomBottomSheet({
+  const CustomBottomSheet({
     super.key,
     required this.onConfirm,
   });
-  Function(
+  final Function(
     String paymentType,
     String returnType,
     String description,
@@ -18,7 +18,6 @@ class CustomBottomSheet extends StatefulWidget {
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
 }
-
 
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
   PaymentType selectedPayment = PaymentType.cash;
