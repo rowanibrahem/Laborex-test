@@ -109,15 +109,6 @@ class _InfoDialogState extends State<InfoDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // BottomSection(
-                    //     title: 'نوع المرتجع',
-                    //     subtitle: ReturnTypeExtension.fromString(widget
-                    //                 .deliveryOrder
-                    //                 .orderDescriptionList!
-                    //                 .first
-                    //                 .returnType!)
-                    //             ?.arabicName ??
-                    //         "غير معروف"),
                     Flexible(
                       child: ListTile(
                         title: SizedBox(
@@ -158,16 +149,11 @@ class _InfoDialogState extends State<InfoDialog> {
                     Flexible(
                       child: ElevatedButton(
                         onPressed: null,
-                        child: Flexible(
-                          child: Text(
-                            PaymentTypeExtension.fromString(widget
-                                        .deliveryOrder
-                                        .orderDescriptionList!
-                                        .first
-                                        .paymentType!)
-                                    ?.arabicName ??
-                                "غير معروف",
-                          ),
+                        child: Text(
+                          PaymentTypeExtension.fromString(widget.deliveryOrder
+                                      .orderDescriptionList!.first.paymentType!)
+                                  ?.arabicName ??
+                              "غير معروف",
                         ),
                       ),
                     ),

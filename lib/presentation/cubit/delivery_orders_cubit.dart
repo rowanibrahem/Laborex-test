@@ -17,7 +17,6 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
   //   required this.remoteRepo,
   // }) : super(const DeliveryOrdersInitial());
 
-  final List<DeliverOrderModel> _orders = [];
   List<DeliverOrderModel> stockList = [];
   List<DeliverOrderModel> deliveredList = [];
   List<DeliverOrderModel> pendingList = [];
