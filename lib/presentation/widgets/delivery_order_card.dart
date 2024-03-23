@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laborex_distribution_app/presentation/widgets/bottom_section.dart';
 
 import '../../data/models/deliver_order_model.dart';
 
 class DeliveryOrderCard extends StatefulWidget {
   final DeliverOrderModel deliveryOrder;
-  void Function(String) onTapAction;
+  final void Function(String) onTapAction;
 
-  DeliveryOrderCard(
+  const DeliveryOrderCard(
       {super.key, required this.deliveryOrder, required this.onTapAction});
 
   @override
@@ -88,23 +89,3 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
   }
 }
 
-class BottomSection extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  const BottomSection({super.key, required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold, color: const Color(0xbb696969)),
-        ),
-        SizedBox(height: 8.h),
-        Text(subtitle),
-      ],
-    );
-  }
-}
