@@ -50,5 +50,6 @@ class LoadedState extends DeliveryOrdersState {
 }
 
 class ErrorOccurred extends DeliveryOrdersState {
-   const ErrorOccurred() : super(status: "error");
+  final String message;
+  const ErrorOccurred({required this.message});
 }

@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:laborex_distribution_app/core/errors/failure.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 
 import '../../data/models/deliver_order_model.dart';
@@ -75,9 +77,13 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
         pendingList: pendingList,
       ));
     } catch (e) {
-      showSnackBar(e.toString());
-
-      emit(const DeliveryOrdersInitial());
+      if (e is DioException) {
+        emit(ErrorOccurred(message: '${e.message}'));
+        throw ServerFailure.fromDioError(e);
+      } else {
+        rethrow;
+      }
+      //showSnackBar('${ServerFailure.fromDioError(errMessage)}');
     }
   }
 
@@ -115,7 +121,6 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
         description,
       );
       showSnackBar(response);
-
     } catch (e) {
       showSnackBar(e.toString());
     }
