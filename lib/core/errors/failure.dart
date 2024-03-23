@@ -1,8 +1,6 @@
-
 import 'dart:js_interop';
 
 import 'package:dio/dio.dart';
-
 
 sealed class Failure {
   final String errMessage;
@@ -13,52 +11,40 @@ sealed class Failure {
 class ServerFailure extends Failure {
   ServerFailure(super.errMessage);
 
-  factory ServerFailure.fromDioError
-  (DioException dioError) {
+  factory ServerFailure.fromDioError(DioException dioError) {
     switch (dioError.type) {
       case DioExceptionType.connectionError:
-        return ServerFailure(
-          'لايوجد اتصال بالانترنت');
+        return ServerFailure('لا يوجد اتصال بالإنترنت');
 
       // case DioExceptionType.sendTimeout:
-      //   return ServerFailure('Send timeout with ApiServer');
+      //   return ServerFailure('انتهت مدة الانتظار أثناء إرسال الطلب إلى الخادم');
 
       case DioExceptionType.receiveTimeout:
-        return ServerFailure('Receive timeout with ApiServer');
+        return ServerFailure('انتهت مدة الانتظار أثناء استقبال البيانات من الخادم');
 
       case DioExceptionType.badResponse:
-        return ServerFailure.fromResponse(
-           
-             dioError.response!.data);
+        return ServerFailure.fromResponse(dioError.response!.data);
+
       case DioExceptionType.cancel:
-        return ServerFailure
-        ('تم الغاء الاتصال بالسيرفر');
+        return ServerFailure('تم إلغاء الاتصال بالخادم');
 
       case DioExceptionType.unknown:
         if (dioError.message!.contains('SocketException')) {
-          return ServerFailure('No Internet Connection');
+          return ServerFailure('لا يوجد اتصال بالإنترنت');
         }
-        return ServerFailure('Unexpected Error, Please try again!');
+        return ServerFailure('حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى!');
       default:
-        return ServerFailure('Opps There was an Error, Please try again');
+        return ServerFailure('حدث خطأ، يرجى المحاولة مرة أخرى');
     }
   }
 
-  factory ServerFailure.fromResponse
-  ( Response response) {
-    if (response.statusCode == 400 || 
-    response.statusCode == 300 
-   ) {
-      return ServerFailure
-      (response.data['error']['message']);
-    // } else if 
-    // (response.statusCode == 404) {
-    //   return ServerFailure('Your request not found, Please try later!');
-    } else if (
-      response.statusCode == 500) {
-      return ServerFailure('Internal Server error, Please try later');
+  factory ServerFailure.fromResponse(Response response) {
+    if (response.statusCode == 400 || response.statusCode == 300) {
+      return ServerFailure(response.data['error']['message']);
+    } else if (response.statusCode == 500) {
+      return ServerFailure('خطأ في الخادم الداخلي، يرجى المحاولة لاحقاً');
     } else {
-      return ServerFailure('Opps There was an Error, Please try again');
+      return ServerFailure('حدث خطأ، يرجى المحاولة مرة أخرى');
     }
   }
 }
