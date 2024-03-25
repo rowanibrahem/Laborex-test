@@ -6,6 +6,7 @@ import 'package:laborex_distribution_app/core/laborex_title.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 import 'package:laborex_distribution_app/presentation/screens/login_screen.dart';
 import 'package:laborex_distribution_app/presentation/widgets/custom_appbar.dart';
+import 'package:laborex_distribution_app/presentation/widgets/custom_body.dart';
 import 'package:laborex_distribution_app/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:laborex_distribution_app/presentation/widgets/custom_drawer.dart';
 import 'package:laborex_distribution_app/presentation/widgets/info_dialog.dart';
@@ -91,151 +92,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         CustomDrawer(context: context),
          
         
-        body: 
-        TabBarView(
-          controller: _topTabController,
-          children: [
-            if (BlocProvider.of<DeliveryOrdersCubit>(context, listen: true)
-                    .state
-                    .status ==
-                "loading") ...[
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ] else
-              //*
-              ...[
-              (stockList.isEmpty)
-                  ? RefreshIndicator(
-                      onRefresh: () => refreshData(context),
-                      child: Stack(
-                        children: <Widget>[
-                          ListView(),
-                          const Center(
-                            child: Text('لا يوجد طلبات هنا'),
-                          )
-                        ],
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () => refreshData(context),
-                      child: ListView.builder(
-                        itemCount: stockList.length,
-                        itemBuilder: (_, int index) {
-                          return DeliveryOrderCard(
-                            deliveryOrder: stockList[index],
-                            onTapAction: (itemId) =>
-                                BlocProvider.of<DeliveryOrdersCubit>(context)
-                                    .inStockAction(
-                              token:
-                                  BlocProvider.of<AuthenticationCubit>(context)
-                                      .state
-                                      .token!,
-                              id: itemId,
-                              showSnackBar: showSnackBar,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-              (pendingList.isEmpty)
-                  ? RefreshIndicator(
-                      onRefresh: () => refreshData(context),
-                      child: Stack(
-                        children: <Widget>[
-                          ListView(),
-                          const Center(
-                            child: Text('لا يوجد طلبات هنا'),
-                          )
-                        ],
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () => refreshData(context),
-                      child: ListView.builder(
-                        itemCount: pendingList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return DeliveryOrderCard(
-                            deliveryOrder: pendingList[index],
-                            onTapAction: (itemId) {
-                              Scaffold.of(context).showBottomSheet(
-                                (context) {
-                                  return CustomBottomSheet(
-                                    onConfirm: (
-                                      String paymentType,
-                                      String returnType,
-                                      String description,
-                                    ) {
-                                      BlocProvider.of<DeliveryOrdersCubit>(
-                                              context)
-                                          .deliveredAction(
-                                        token: BlocProvider.of<
-                                                AuthenticationCubit>(context)
-                                            .state
-                                            .token!,
-                                        id: itemId,
-                                        paymentType: paymentType,
-                                        returnType: returnType,
-                                        description: description,
-                                        showSnackBar: showSnackBar,
-                                      );
-                                    },
-                                  );
-                                },
-
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-              (deliveredList.isEmpty)
-                  ? RefreshIndicator(
-                      onRefresh: () => refreshData(context),
-                      child: Stack(
-                        children: <Widget>[
-                          ListView(),
-                          const Center(
-                            child: Text('لا يوجد طلبات هنا'),
-                          )
-                        ],
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () => refreshData(context),
-                      child: ListView.builder(
-                        itemCount: deliveredList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return DeliveryOrderCard(
-                            deliveryOrder: deliveredList[index],
-                            //TODO
-                            onTapAction: (itemId) {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return InfoDialog(
-                                      deliveryOrder: deliveredList[index],
-                                    );
-                                    //   return const AlertDialog(
-                                    //     title: Text("Success"),
-                                    //     content: Text("Saved successfully"),
-                                    //   );
-                                  });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-            ]
-          ],
-        ),
-      ),
+        body: TabViewsBuilder(
+          topTabController: _topTabController,
+          refreshdata: refreshData(context), 
+          showsnackbar: showSnackBar,
+          
+          
+         
+      )
+      )
+  
     );
   }
+  
 }
