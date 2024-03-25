@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/core/laborex_title.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 import 'package:laborex_distribution_app/presentation/screens/login_screen.dart';
+import 'package:laborex_distribution_app/presentation/widgets/custom_appbar.dart';
 import 'package:laborex_distribution_app/presentation/widgets/custom_bottom_sheet.dart';
+import 'package:laborex_distribution_app/presentation/widgets/custom_drawer.dart';
 import 'package:laborex_distribution_app/presentation/widgets/info_dialog.dart';
 
 import '../../data/models/deliver_order_model.dart';
@@ -81,67 +83,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 100.h,
-          elevation: 4.r,
-          actions: laborexTitle(context),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(80.h),
-            child: TabBar(
-              controller: _topTabController,
-              tabs: [
-                Tab(
-                  child: Text(
-                    'المخزن',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Tab(
-                  // text: 'جاري التوصيل',
-                  child: Text(
-                    "جاري التوصيل",
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    "مكتمل",
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        //TODO add drawer
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              DrawerHeader(
-                decoration: const BoxDecoration(),
-                child: Column(
-                  children: laborexTitle(context),
-                ),
-              ),
-              ListTile(
-                title: const Text('تسجيل الخروج'),
-                onTap: () {
-                  BlocProvider.of<AuthenticationCubit>(context).logOut();
-                },
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
+        appBar: LaborexAppBar(context: context,topTabController: _topTabController,),
+        
+        drawer:
+        CustomDrawer(context: context),
+         
+        
+        body: 
+        TabBarView(
           controller: _topTabController,
           children: [
             if (BlocProvider.of<DeliveryOrdersCubit>(context, listen: true)
