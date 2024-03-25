@@ -79,52 +79,55 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     } catch (e) {
       if (e is DioException) {
         emit(ErrorOccurred(message: '${e.message}'));
+
         throw ServerFailure.fromDioError(e);
-      } else {
-        rethrow;
+        // } else {
+        //   rethrow;
+        // }
       }
-      //showSnackBar('${ServerFailure.fromDioError(errMessage)}');
-    }
-  }
-
-  Future<void> inStockAction({
-    required String token,
-    required String id,
-    required void Function(String) showSnackBar,
-  }) async {
-    emit(const LoadingState());
-    try {
-      final response = await _remoteRepo!.startDelivery(token, id);
-
-      showSnackBar(response);
-    } catch (e) {
-      showSnackBar(e.toString());
-    }
-    getOrders(token: token, showSnackBar: showSnackBar);
-  }
-
-  Future<void> deliveredAction({
-    required String token,
-    required String id,
-    required String paymentType,
-    required String returnType,
-    required String description,
-    required void Function(String) showSnackBar,
-  }) async {
-    emit(const LoadingState());
-    try {
-      final response = await _remoteRepo!.finishOrder(
-        token,
-        id,
-        paymentType,
-        returnType,
-        description,
-      );
-      showSnackBar(response);
-    } catch (e) {
-      showSnackBar(e.toString());
+      // showSnackBar
+      // ('${ServerFailure.fromDioError()}');
     }
 
-    getOrders(token: token, showSnackBar: showSnackBar);
+    Future<void> inStockAction({
+      required String token,
+      required String id,
+      required void Function(String) showSnackBar,
+    }) async {
+      emit(const LoadingState());
+      try {
+        final response = await _remoteRepo!.startDelivery(token, id);
+
+        showSnackBar(response);
+      } catch (e) {
+        showSnackBar(e.toString());
+      }
+      getOrders(token: token, showSnackBar: showSnackBar);
+    }
+
+    Future<void> deliveredAction({
+      required String token,
+      required String id,
+      required String paymentType,
+      required String returnType,
+      required String description,
+      required void Function(String) showSnackBar,
+    }) async {
+      emit(const LoadingState());
+      try {
+        final response = await _remoteRepo!.finishOrder(
+          token,
+          id,
+          paymentType,
+          returnType,
+          description,
+        );
+        showSnackBar(response);
+      } catch (e) {
+        showSnackBar(e.toString());
+      }
+
+      getOrders(token: token, showSnackBar: showSnackBar);
+    }
   }
 }
