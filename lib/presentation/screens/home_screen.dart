@@ -24,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late RemoteRepo remoteRepo;
-  late Dio _dio;
+  
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
@@ -81,6 +81,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           );
         }
+        
+
       },
       child: Scaffold(
         appBar: LaborexAppBar(context: context,topTabController: _topTabController,),
