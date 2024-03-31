@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/core/enums.dart';
 import 'package:laborex_distribution_app/data/models/deliver_order_model.dart';
 import 'package:laborex_distribution_app/presentation/widgets/bottom_section.dart';
-import 'package:laborex_distribution_app/presentation/widgets/delivery_order_card.dart';
 
 class InfoDialog extends StatefulWidget {
   const InfoDialog({super.key, required this.deliveryOrder});

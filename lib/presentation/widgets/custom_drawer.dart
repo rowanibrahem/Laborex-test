@@ -13,16 +13,13 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DrawerHeader(
-            decoration: const BoxDecoration(),
-            child: Column(
-              children: laborexTitle(context),
-            ),
+          const DrawerHeader(
+            decoration: BoxDecoration(),
+            child: LaborexTitle(),
           ),
           ListTile(
             title: const Text('تسجيل الخروج'),
-            onTap: () => 
-            BlocProvider.of<AuthenticationCubit>(context).logOut(),
+            onTap: () => BlocProvider.of<AuthenticationCubit>(context).logOut(),
           ),
         ],
       ),

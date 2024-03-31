@@ -16,8 +16,7 @@ class DeliveryOrderCard extends StatefulWidget {
 }
 
 class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
-  final String _scanBarcode = 'Unknown';
-  final bool _foundResult = false;
+
 
   @override
   Widget build(BuildContext context) {

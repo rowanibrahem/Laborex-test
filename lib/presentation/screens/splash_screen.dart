@@ -102,7 +102,9 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> setDependencies(BuildContext ctx) async {
     _prefs = await SecureSharedPref.getInstance();
     _localRepo = LocalRepo(secureSharedPreferences: _prefs);
-    dio = Dio();
+    dio = Dio(
+      
+    );
     remoteRepo = RemoteRepo(
       dio,
     );
@@ -141,7 +143,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  
+
 
   Widget _buildSplashScreen() => Scaffold(
         backgroundColor: Colors.white, // Replace with your background color
