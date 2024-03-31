@@ -171,7 +171,8 @@ class RefreshableListView extends StatelessWidget {
         itemBuilder: (_, int index) {
           return DeliveryOrderCard(
             deliveryOrder: orderList[index],
-            onTapAction: (itemId) => deliveryOrdersCubit.inStockAction(
+            onTapAction: (itemId) => 
+            deliveryOrdersCubit.inStockAction(
               token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
               id: itemId,
               showSnackBar: showSnackBar!(),
