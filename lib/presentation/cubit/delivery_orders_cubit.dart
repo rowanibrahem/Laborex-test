@@ -89,45 +89,47 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
       // ('${ServerFailure.fromDioError()}');
     }
 
+ }
+
     Future<void> inStockAction({
-      required String token,
-      required String id,
-      required void Function(String) showSnackBar,
-    }) async {
-      emit(const LoadingState());
-      try {
-        final response = await _remoteRepo!.startDelivery(token, id);
+    required String token,
+    required String id,
+    required void Function(String) showSnackBar,
+  }) async {
+    emit(const LoadingState());
+    try {
+      final response = await _remoteRepo!.startDelivery(token, id);
 
-        showSnackBar(response);
-      } catch (e) {
-        showSnackBar(e.toString());
-      }
-      getOrders(token: token, showSnackBar: showSnackBar);
+      showSnackBar(response);
+    } catch (e) {
+      showSnackBar(e.toString());
     }
-
-    Future<void> deliveredAction({
-      required String token,
-      required String id,
-      required String paymentType,
-      required String returnType,
-      required String description,
-      required void Function(String) showSnackBar,
-    }) async {
-      emit(const LoadingState());
-      try {
-        final response = await _remoteRepo!.finishOrder(
-          token,
-          id,
-          paymentType,
-          returnType,
-          description,
-        );
-        showSnackBar(response);
-      } catch (e) {
-        showSnackBar(e.toString());
-      }
-
-      getOrders(token: token, showSnackBar: showSnackBar);
-    }
+    getOrders(token: token, showSnackBar: showSnackBar);
   }
+
+  Future<void> deliveredAction({
+    required String token,
+    required String id,
+    required String paymentType,
+    required String returnType,
+    required String description,
+    required void Function(String) showSnackBar,
+  }) async {
+    emit(const LoadingState());
+    try {
+      final response = await _remoteRepo!.finishOrder(
+        token,
+        id,
+        paymentType,
+        returnType,
+        description,
+      );
+      showSnackBar(response);
+    } catch (e) {
+      showSnackBar(e.toString());
+    }
+
+    getOrders(token: token, showSnackBar: showSnackBar);
+  }
+  
 }

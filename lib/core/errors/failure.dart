@@ -1,26 +1,22 @@
-import 'dart:js_interop';
 
 import 'package:dio/dio.dart';
 
 sealed class Failure {
-  final String errMessage;
+  final String errorMessage;
 
-  const Failure(this.errMessage);
+  const Failure(this.errorMessage);
 }
 
 class ServerFailure extends Failure {
-  ServerFailure(super.errMessage);
+  ServerFailure(super.errorMessage);
 
   factory ServerFailure.fromDioError(DioException dioError) {
     switch (dioError.type) {
       case DioExceptionType.connectionError:
         return ServerFailure('لا يوجد اتصال بالإنترنت');
 
-      // case DioExceptionType.sendTimeout:
-      //   return ServerFailure('انتهت مدة الانتظار أثناء إرسال الطلب إلى الخادم');
-
-      case DioExceptionType.receiveTimeout:
-        return ServerFailure('انتهت مدة الانتظار أثناء استقبال البيانات من الخادم');
+      case DioExceptionType.sendTimeout  || DioExceptionType.receiveTimeout:
+        return ServerFailure('يوجد مشكلة في الاتصال بالانترنت');
 
       case DioExceptionType.badResponse:
         return ServerFailure.fromResponse(dioError.response!.data);
@@ -32,7 +28,7 @@ class ServerFailure extends Failure {
         if (dioError.message!.contains('SocketException')) {
           return ServerFailure('لا يوجد اتصال بالإنترنت');
         }
-        return ServerFailure('حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى!');
+        return ServerFailure('حدث خطأ , يرجى المحاولة مرة أخرى');
       default:
         return ServerFailure('حدث خطأ، يرجى المحاولة مرة أخرى');
     }
