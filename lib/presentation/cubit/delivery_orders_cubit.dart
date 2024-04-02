@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:laborex_distribution_app/core/errors/failure.dart';
+import 'package:laborex_distribution_app/core/errors/custom_error.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 
 import '../../data/models/deliver_order_model.dart';
@@ -15,9 +13,6 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     RemoteRepo? remoteRepo,
   })  : _remoteRepo = remoteRepo,
         super(const DeliveryOrdersInitial());
-  // DeliveryOrdersCubit({
-  //   required this.remoteRepo,
-  // }) : super(const DeliveryOrdersInitial());
 
   List<DeliverOrderModel> stockList = [];
   List<DeliverOrderModel> deliveredList = [];
@@ -27,30 +22,23 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     _remoteRepo = repo;
   }
 
-  void startScan() {
-    emit(const DeliveryOrdersScanning());
-
-    ///TODO:IMPLEMENT scanning
-    String id = 'barcode.code';
-    addOrder(id);
-    // emit(ScanedOrder());
-    // getAllData(token);
-    // emit(RefreshData());
+  /// This function is called when an error occurs is no longer need to be handled
+  ///  and emit the  next correct state.
+  void errorHandled() {
+    emit(
+      LoadedState(
+        stockList: stockList,
+        deliveredList: deliveredList,
+        pendingList: pendingList,
+      ),
+    );
   }
 
-  addOrder(String id) {}
-
-  // Future<List<DeliverOrderModel>> getAllData(String token) async {
-  //   emit(LoadingState());
-
-  //   var time = await Future(() => const Duration(seconds: 12));
-  //   var indexOfBarcode = orders.first as List<DeliverOrderModel>;
-  //   return indexOfBarcode;
-  // }
-
-  Future<void> getOrders({
+  /// This function is called to get the orders from the remote repo.
+  /// It emits the [LoadingState] before fetching the orders and then emits the
+  /// [LoadedState] with the new orders.
+  Future<void> fetchOrders({
     required String token,
-    required void Function(String) showSnackBar,
   }) async {
     //needed to make sure dio and apiService are initialized first
 
@@ -59,6 +47,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     try {
       List<DeliverOrderModel> allDeliveryOrders =
           await _remoteRepo!.getOrders(token);
+
       //*
       stockList = allDeliveryOrders
           .where((element) => element.orderStatus == OrderStatus.inStock)
@@ -77,43 +66,42 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
         pendingList: pendingList,
       ));
     } catch (e) {
-      if (e is DioException) {
-        emit(ErrorOccurred(message: '${e.message}'));
-
-        throw ServerFailure.fromDioError(e);
-        // } else {
-        //   rethrow;
-        // }
+      if (e is CustomError) {
+        emit(ErrorOccurredState(customError: e));
+      } else {
+        //TODO maybe there is better options for other types of error
+        rethrow;
       }
-      // showSnackBar
-      // ('${ServerFailure.fromDioError()}');
     }
-
- }
-
-    Future<void> inStockAction({
+  }
+/// This function is called to perform the action of starting the delivery process.
+  Future<void> inStockAction({
     required String token,
     required String id,
-    required void Function(String) showSnackBar,
   }) async {
     emit(const LoadingState());
     try {
       final response = await _remoteRepo!.startDelivery(token, id);
 
-      showSnackBar(response);
+      emit(ShowMessageState(message: response));
     } catch (e) {
-      showSnackBar(e.toString());
+      if (e is CustomError) {
+        emit(ErrorOccurredState(customError: e));
+      } else {
+        rethrow;
+      }
     }
-    getOrders(token: token, showSnackBar: showSnackBar);
+    fetchOrders(
+      token: token,
+    );
   }
-
+/// This function is called to perform the action of finishing the delivery process.
   Future<void> deliveredAction({
     required String token,
     required String id,
     required String paymentType,
     required String returnType,
     required String description,
-    required void Function(String) showSnackBar,
   }) async {
     emit(const LoadingState());
     try {
@@ -124,12 +112,17 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
         returnType,
         description,
       );
-      showSnackBar(response);
+      emit(ShowMessageState(message: response));
     } catch (e) {
-      showSnackBar(e.toString());
+      if (e is CustomError) {
+        emit(ErrorOccurredState(customError: e));
+      } else {
+        rethrow;
+      }
     }
 
-    getOrders(token: token, showSnackBar: showSnackBar);
+    fetchOrders(
+      token: token,
+    );
   }
-  
 }

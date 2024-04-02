@@ -5,11 +5,16 @@ abstract class DeliveryOrdersState extends Equatable {
   final List<DeliverOrderModel> stockList;
   final List<DeliverOrderModel> deliveredList;
   final List<DeliverOrderModel> pendingList;
+  final CustomError? customError;
+  final String? message;
+
   const DeliveryOrdersState(
       {this.status = "initial",
       this.deliveredList = const [],
       this.pendingList = const [],
-      this.stockList = const []});
+      this.stockList = const [],
+      this.customError,
+      this.message});
 
   @override
   List<Object> get props => [
@@ -17,15 +22,13 @@ abstract class DeliveryOrdersState extends Equatable {
         stockList,
         deliveredList,
         pendingList,
+        customError ?? "",
+        message ?? "",
       ];
 }
 
 class DeliveryOrdersInitial extends DeliveryOrdersState {
   const DeliveryOrdersInitial() : super();
-}
-
-class DeliveryOrdersScanning extends DeliveryOrdersState {
-  const DeliveryOrdersScanning() : super(status: "scanning");
 }
 
 class LoadingState extends DeliveryOrdersState {
@@ -49,7 +52,10 @@ class LoadedState extends DeliveryOrdersState {
       ];
 }
 
-class ErrorOccurred extends DeliveryOrdersState {
-  final String message;
-  const ErrorOccurred({required this.message});
+class ShowMessageState extends DeliveryOrdersState {
+  const ShowMessageState({required super.message});
+}
+
+class ErrorOccurredState extends DeliveryOrdersState {
+  const ErrorOccurredState({required super.customError});
 }
