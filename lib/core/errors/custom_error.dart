@@ -18,10 +18,15 @@ class ServerError extends CustomError {
         return ServerError('يوجد مشكلة في الاتصال بالانترنت');
 
       case DioExceptionType.badResponse:
-        return ServerError.fromResponse(dioError.response!.data);
+        if (dioError.response == null)
+          return ServerError('حدث خطأ، يرجى المحاولة مرة أخرى');
+        else
+        return ServerError.fromResponse(dioError.response!);
 
       case DioExceptionType.cancel:
         return ServerError('تم إلغاء الاتصال بالخادم');
+        case DioExceptionType.badResponse:
+        return ServerError(dioError.response?.data??"يرجى المحاولة مجددا");
 
       case DioExceptionType.unknown:
         if (dioError.message!.contains('SocketException')) {

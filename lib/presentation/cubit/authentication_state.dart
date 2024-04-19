@@ -2,10 +2,13 @@ part of 'authentication_cubit.dart';
 
 sealed class AuthenticationState extends Equatable {
   final String? token;
- const AuthenticationState({this.token});
+  final CustomError? customError;
+
+  const AuthenticationState({this.token,       this.customError,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [token??"" , customError??""];
 }
 
 final class AuthenticationInitial extends AuthenticationState {}
@@ -22,3 +25,7 @@ final class LoggedIn extends AuthenticationState {
 final class LoggedOut extends AuthenticationState {}
 
 final class LoadingState extends AuthenticationState {}
+
+class ErrorOccurredState extends AuthenticationState {
+  const ErrorOccurredState({required super.customError});
+}
