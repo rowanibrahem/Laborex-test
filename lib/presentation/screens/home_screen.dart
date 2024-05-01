@@ -32,6 +32,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  @override
+  void dispose() {
+    _topTabController.dispose();
+    super.dispose();
+  }
+
 
 
   @override
@@ -52,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           context: context,
           topTabController: _topTabController,
         ),
-        drawer: CustomDrawer(context: context),
+        drawer: CustomDrawer(context: context,),
         body: HomeBody(
           topTabController: _topTabController,
         ),

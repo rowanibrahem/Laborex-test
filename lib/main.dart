@@ -47,6 +47,9 @@ class MyApp extends StatelessWidget {
               primary: const Color(0xFF6AB187),
               onPrimary: Colors.white,
               secondary: const Color(0xFFF6F6F6),
+              onSecondary: const Color(0xFF6AB187),
+              tertiary: const Color(0xFFF6806E),
+
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/presentation/widgets/bottom_section.dart';
+import 'package:laborex_distribution_app/presentation/widgets/orders_lists/custom_action_button.dart';
 
 import '../../data/models/deliver_order_model.dart';
 
@@ -46,19 +47,15 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
                     ),
               ),
               // trailing: Text(deliveryOrder.status.toString()),
-              trailing: InkWell(
-                child: (widget.deliveryOrder.orderStatus == OrderStatus.inStock)
-                    ? Image.asset(
-                        "assets/icons/qr_red.png",
-                      )
-                    : (widget.deliveryOrder.orderStatus ==
-                            OrderStatus.inProgress)
-                        ? Image.asset("assets/icons/qr_green.png")
-                        : Image.asset("assets/icons/green_arrow.png"),
-                onTap: () {
+              trailing:
+              CustomActionButton(
+                status : widget.deliveryOrder.orderStatus,
+
+                onPressed: () {
                   widget.onTapAction(widget.deliveryOrder.orderId.toString());
                 },
-              )),
+
+              ),),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: Row(
