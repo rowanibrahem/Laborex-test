@@ -46,14 +46,25 @@ dependencies:
   secure_shared_preferences: ^0.0.4
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^3.0.1
   flutter_test:
-    sdk: flutter
+    sdk:   flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon_green.png"
+  # To add assets to your application, add an assets section, like this:
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+      - assets/
+      - assets/icons/
   fonts:
     - family: Cairo
       fonts:
@@ -78,10 +89,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/
-    - assets/icons/
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
