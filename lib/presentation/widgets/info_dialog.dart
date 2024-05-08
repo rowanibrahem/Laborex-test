@@ -130,7 +130,7 @@ class _InfoDialogState extends State<InfoDialog> {
                             ReturnTypeExtension.fromString(widget
                                         .deliveryOrder
                                         .orderDescriptionList!
-                                        .first
+
                                         .returnType!)
                                     ?.arabicName ??
                                 "غير معروف",
@@ -150,7 +150,7 @@ class _InfoDialogState extends State<InfoDialog> {
                         onPressed: null,
                         child: Text(
                           PaymentTypeExtension.fromString(widget.deliveryOrder
-                                      .orderDescriptionList!.first.paymentType!)
+                                      .orderDescriptionList!.paymentType!)
                                   ?.arabicName ??
                               "غير معروف",
                         ),
@@ -160,28 +160,33 @@ class _InfoDialogState extends State<InfoDialog> {
                 ),
               ),
               const SizedBox(height: 4),
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  "تفاصل المرتجع",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xbb696969),
-                        fontSize: 14.sp,
-                      ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                    (widget.deliveryOrder.orderDescriptionList?.first
-                            .description) ??
-                        "لا يوجد تفاصيل",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+               (ReturnTypeExtension.fromString(widget.deliveryOrder.orderDescriptionList?.returnType??"PARTIAL_REFUND") != ReturnType.noReturn  )?
+             Column(
+
+             children : [
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    "تفاصل المرتجع",
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xbb696969),
                           fontSize: 14.sp,
-                        )),
-              ),
+                        ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                      (widget.deliveryOrder.orderDescriptionList?.description) ??
+                          "لا يوجد تفاصيل",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontSize: 14.sp,
+                          )),
+                ),
+              ]):
+              const SizedBox(),
             ],
           ),
         ),
@@ -189,4 +194,3 @@ class _InfoDialogState extends State<InfoDialog> {
     );
   }
 }
-

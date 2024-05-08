@@ -9,10 +9,10 @@ class OrderDescriptionList extends Equatable {
 	final String? description;
 
 	const OrderDescriptionList({
-		this.id, 
-		this.paymentType, 
-		this.returnType, 
-		this.description, 
+		this.id,
+		this.paymentType,
+		this.returnType,
+		this.description,
 	});
 
 	factory OrderDescriptionList.fromMap(Map<String, dynamic> data) {
