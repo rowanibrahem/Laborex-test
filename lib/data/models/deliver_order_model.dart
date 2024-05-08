@@ -33,7 +33,7 @@ class DeliverOrderModel extends Equatable {
   final DateTime? deliveredAt;
   final String? lineName;
   final OrderStatus orderStatus;
-  final List<OrderDescriptionList>? orderDescriptionList;
+  final OrderDescriptionList? orderDescriptionList;
 
   const DeliverOrderModel({
     this.orderId,
@@ -75,9 +75,12 @@ class DeliverOrderModel extends Equatable {
           : DateTime.parse(data['deliveredAt'] as String),
       lineName: data['lineName'] as String?,
       orderStatus: parseOrderStatus(data['orderStatus'] as String),
-      orderDescriptionList: (data['orderDescriptionList'] as List<dynamic>?)
-          ?.map((e) => OrderDescriptionList.fromMap(e as Map<String, dynamic>))
-          .toList(),
+      orderDescriptionList: (data['orderDescriptionList'] as List<dynamic>).isEmpty ? null : OrderDescriptionList.fromMap(
+                  data['orderDescriptionList'][0]),
+
+      // (data['orderDescriptionList'] as dynamic)
+      //     ?.map((e) => OrderDescriptionList.fromMap(e as Map<String, dynamic>))
+      //     ,
     );
   }
 
@@ -97,7 +100,7 @@ class DeliverOrderModel extends Equatable {
         'lineName': lineName,
         'orderStatus': orderStatus,
         'orderDescriptionList':
-            orderDescriptionList?.map((e) => e.toMap()).toList(),
+            orderDescriptionList,
       };
 
   /// Parses the string and returns the resulting Json object as [DeliverOrderModel].
@@ -123,7 +126,7 @@ class DeliverOrderModel extends Equatable {
     DateTime? deliveredAt,
     String? lineName,
     OrderStatus? orderStatus,
-    List<OrderDescriptionList>? orderDescriptionList,
+  OrderDescriptionList? orderDescriptionList,
   }) {
     return DeliverOrderModel(
       orderId: orderId ?? this.orderId,

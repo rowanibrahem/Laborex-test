@@ -22,24 +22,30 @@ class PendingListView extends StatelessWidget {
         : RefreshableOrdersListView(
             orderList: pendingList,
             onTapAction: (itemId, _) {
-              Scaffold.of(context).showBottomSheet(
-                (context) {
-                  return CustomBottomSheet(
-                    onConfirm: (
-                      String paymentType,
-                      String returnType,
-                      String description,
-                    ) {
-                      deliveryOrdersCubit.deliveredAction(
-                        token: BlocProvider.of<AuthenticationCubit>(context)
-                            .state
-                            .token!,
-                        id: itemId,
-                        paymentType: paymentType,
-                        returnType: returnType,
-                        description: description,
-                      );
-                    },
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) {
+                  return Wrap(
+                    children: [
+                      CustomBottomSheet(
+                        onConfirm: (
+                          String paymentType,
+                          String returnType,
+                          String description,
+                        ) {
+                          deliveryOrdersCubit.deliveredAction(
+                            token: BlocProvider.of<AuthenticationCubit>(context)
+                                .state
+                                .token!,
+                            id: itemId,
+                            paymentType: paymentType,
+                            returnType: returnType,
+                            description: description,
+                          );
+                        },
+                      )
+                    ],
                   );
                 },
               );
