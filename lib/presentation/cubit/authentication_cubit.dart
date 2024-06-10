@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:laborex_distribution_app/data/data%20source/cacheNetwork.dart';
 import 'package:laborex_distribution_app/data/data%20source/local_repo.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
 
@@ -7,6 +8,8 @@ import '../../core/errors/custom_error.dart';
 
 part 'authentication_state.dart';
 
+
+late String accessToken;
 class AuthenticationCubit extends Cubit<AuthenticationState> {
   LocalRepo? localRepo;
   RemoteRepo? remoteRepo;
@@ -74,6 +77,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       await localRepo!.addToken(
         newToken,
       );
+      await CacheNetwork.insertToCashe(key: 'access_token', value: newToken);
 
       token = newToken;
 
