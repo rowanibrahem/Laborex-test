@@ -12,7 +12,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await CacheNetwork.cachInstialization();
   accessToken= (await CacheNetwork.getCacheData(key: "access_token"))!;
-  print("access Token : $accessToken!");
+  publicKey=(await CacheNetwork.getCacheData(key: "publicKey"))!;
 
   runApp(const MyApp());
 }

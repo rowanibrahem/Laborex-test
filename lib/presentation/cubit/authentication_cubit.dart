@@ -10,6 +10,7 @@ part 'authentication_state.dart';
 
 
 late String accessToken;
+late String publicKey;
 class AuthenticationCubit extends Cubit<AuthenticationState> {
   LocalRepo? localRepo;
   RemoteRepo? remoteRepo;
@@ -68,22 +69,23 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     {
       emit(LoadingState());
 
-
-      final newToken = await remoteRepo!.login(
+      final loginData=await remoteRepo!.login(
         phoneNumber,
         password,
       );
-
       await localRepo!.addToken(
-        newToken,
+        loginData['token'],
       );
-      await CacheNetwork.insertToCashe(key: 'access_token', value: newToken);
-
-      token = newToken;
+      await CacheNetwork.insertToCashe(key: 'access_token', value: loginData['token']);
+      await CacheNetwork.insertToCashe(key: 'publicKey', value: loginData['publicKey']);
+      token = loginData['token'];
+      accessToken = loginData['token'];
+      publicKey = loginData['publicKey'];
 
       emit(
         LoggedIn(
-          newToken: newToken,
+          newToken:loginData['token'],
+
         ),
       );
     }
@@ -103,5 +105,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     token = '';
     emit(LoggedOut());
     await localRepo?.deleteToken();
+    accessToken='';
   }
 }

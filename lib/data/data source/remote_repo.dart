@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:laborex_distribution_app/core/errors/custom_error.dart';
+import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
 
 import '../../core/constants.dart';
 import '../models/deliver_order_model.dart';
@@ -28,8 +29,8 @@ class RemoteRepo {
     }
   }
 
-  Future<String> login(String phoneNumber, String password) async {
-    return _handleErrors<String>(() async {
+  Future<Map> login(String phoneNumber, String password) async {
+    return _handleErrors(() async {
       final response = await _dio.post(
         Constants.loginUrl,
         data: {
@@ -37,12 +38,14 @@ class RemoteRepo {
           "password": password,
         },
       );
+       print(response.statusCode);
+       print(response.data);
       if (response.statusCode != 200) {
         throw ServerError.fromResponse(response);
       }
 
       else  {
-        return response.data['token'];
+        return response.data;
       }
     });
   }
@@ -53,7 +56,8 @@ class RemoteRepo {
         Constants.getOrdersUrl,
         options: Options(
           headers: {
-            "Authorization": "Bearer $token",
+            "Authorization": "Bearer $accessToken",
+            "publicKey": publicKey
           },
         ),
       );
@@ -74,7 +78,8 @@ class RemoteRepo {
         '${Constants.deliveryStartUrl}$orderId',
         options: Options(
           headers: {
-            "Authorization": "Bearer $token",
+            "Authorization": "Bearer $accessToken",
+            "publicKey": publicKey
           },
         ),
       );
@@ -104,7 +109,8 @@ class RemoteRepo {
         },
         options: Options(
           headers: {
-            "Authorization": "Bearer $token",
+            "Authorization": "Bearer $accessToken",
+            "publicKey": publicKey
           },
         ),
       );
