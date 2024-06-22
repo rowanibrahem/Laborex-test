@@ -13,7 +13,6 @@ void main() async{
   await CacheNetwork.cachInstialization();
   accessToken= (await CacheNetwork.getCacheData(key: "access_token"))!;
   publicKey=(await CacheNetwork.getCacheData(key: "publicKey"))!;
-
   runApp(const MyApp());
 }
 

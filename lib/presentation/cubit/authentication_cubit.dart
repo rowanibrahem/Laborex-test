@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:laborex_distribution_app/data/data%20source/cacheNetwork.dart';
 import 'package:laborex_distribution_app/data/data%20source/local_repo.dart';
 import 'package:laborex_distribution_app/data/data%20source/remote_repo.dart';
@@ -12,7 +13,7 @@ part 'authentication_state.dart';
 late String accessToken;
 late String publicKey;
 class AuthenticationCubit extends Cubit<AuthenticationState> {
-  LocalRepo? localRepo;
+  // LocalRepo? localRepo;
   RemoteRepo? remoteRepo;
   AuthenticationCubit()
       : super(
@@ -21,14 +22,16 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   AuthenticationCubit.loggedIn({
     required this.token,
-    required this.localRepo,
+    // required this.localRepo,
   }) : super(LoggedIn(
           newToken: token,
         ));
 
-  AuthenticationCubit.loggedOut({
-    required this.localRepo,
-  }) : super(
+  AuthenticationCubit.loggedOut(
+      // {
+    // required this.localRepo,
+  // }
+  ) : super(
           LoggedOut(),
         );
 
@@ -41,8 +44,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     );
   }
 
-  void setDependencies(LocalRepo lRepo, RemoteRepo rRepo) {
-    localRepo = lRepo;
+  void setDependencies(
+      // LocalRepo lRepo,
+      RemoteRepo rRepo) {
+    // localRepo = lRepo;
     remoteRepo = rRepo;
   }
 
@@ -51,7 +56,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       return true;
     }
 
-    token = await localRepo?.getToken() ?? '';
+    token = await CacheNetwork.getCacheData(key: 'access_token') ?? '';
     if (token.isNotEmpty) {
       emit(LoggedIn(newToken: token));
       return true;
@@ -72,9 +77,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       final loginData=await remoteRepo!.login(
         phoneNumber,
         password,
-      );
-      await localRepo!.addToken(
-        loginData['token'],
       );
       await CacheNetwork.insertToCashe(key: 'access_token', value: loginData['token']);
       await CacheNetwork.insertToCashe(key: 'publicKey', value: loginData['publicKey']);
@@ -104,7 +106,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   Future<void> logOut() async {
     token = '';
     emit(LoggedOut());
-    await localRepo?.deleteToken();
+    await CacheNetwork.deleteCacheData(key:'access_token');
+    await CacheNetwork.deleteCacheData(key:'publicKey');
     accessToken='';
   }
 }
