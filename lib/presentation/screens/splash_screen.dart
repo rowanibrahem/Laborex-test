@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:laborex_distribution_app/data/data%20source/local_repo.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
 import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
 import 'package:laborex_distribution_app/presentation/helpers/build_navigation_after_splash.dart';
-import 'package:laborex_distribution_app/presentation/screens/home_screen.dart';
-import 'package:laborex_distribution_app/presentation/screens/login_screen.dart';
+
 import 'package:secure_shared_preferences/secure_shared_preferences.dart';
 
 import '../../data/data source/remote_repo.dart';
@@ -33,7 +31,8 @@ class _SplashScreenState extends State<SplashScreen>
   //*
   late SecureSharedPref _prefs;
   late RemoteRepo remoteRepo;
-  late LocalRepo _localRepo;
+
+  // late LocalRepo _localRepo;
   late Dio dio;
 
   @override
@@ -101,24 +100,23 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> setDependencies(BuildContext ctx) async {
     _prefs = await SecureSharedPref.getInstance();
-    _localRepo = LocalRepo(secureSharedPreferences: _prefs);
-    dio = Dio(
-      
-    );
+    // _localRepo = LocalRepo(secureSharedPreferences: _prefs);
+    dio = Dio();
     remoteRepo = RemoteRepo(
       dio,
     );
     if (ctx.mounted) {
-      BlocProvider.of<AuthenticationCubit>(ctx)
-          .setDependencies(_localRepo, remoteRepo);
+      BlocProvider.of<AuthenticationCubit>(ctx).setDependencies(
+          // _localRepo,
+          remoteRepo);
       BlocProvider.of<DeliveryOrdersCubit>(ctx).setDependencies(remoteRepo);
     }
   }
 
   Future<bool> isLogged(BuildContext ctx) async {
 //TODO Need revidsion
-    final isLoggedIn = await
-        BlocProvider.of<AuthenticationCubit>(ctx).isUserLoggedIn();
+    final isLoggedIn =
+        await BlocProvider.of<AuthenticationCubit>(ctx).isUserLoggedIn();
 
     return isLoggedIn;
   }
@@ -135,15 +133,13 @@ class _SplashScreenState extends State<SplashScreen>
         } else {
           Future.delayed(Duration(milliseconds: animationDuration))
               .then((value) {
-                buildNavigationAfterSplash(snapshot, context, animationDuration);
+            buildNavigationAfterSplash(snapshot, context, animationDuration);
           });
         }
         return _buildSplashScreen();
       },
     );
   }
-
-
 
   Widget _buildSplashScreen() => Scaffold(
         backgroundColor: Colors.white, // Replace with your background color

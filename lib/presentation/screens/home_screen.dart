@@ -27,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
     if (context.mounted) {
       BlocProvider.of<DeliveryOrdersCubit>(context).fetchOrders(
-        token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+        token: accessToken,
+        // token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
       );
     }
   }
@@ -37,8 +38,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _topTabController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           context: context,
           topTabController: _topTabController,
         ),
-        drawer: CustomDrawer(context: context,),
+        drawer: CustomDrawer(
+          context: context,
+        ),
         body: HomeBody(
           topTabController: _topTabController,
         ),

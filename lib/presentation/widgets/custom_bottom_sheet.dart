@@ -21,10 +21,11 @@ class CustomBottomSheet extends StatefulWidget {
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
   PaymentType selectedPayment = PaymentType.cash;
   ReturnType selectedReturn = ReturnType.noReturn;
+  final descriptionController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
-    final descriptionController = TextEditingController();
     return Container(
       height: 647.h,
       padding: EdgeInsets.all(24.w),
@@ -101,6 +102,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                 }),
           ),
           TextField(
+            onChanged: (e){print(e);
+              print(descriptionController.text);
+              },
             controller: descriptionController,
             decoration: InputDecoration(
               labelText: 'ادخل تفاصيل المرتجع',
@@ -117,7 +121,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           Align(
             alignment: Alignment.center,
             child: ElevatedButton(
+
               onPressed: () {
+                print(descriptionController.text);
                 widget.onConfirm(
                   selectedPayment.name,
                   selectedReturn.name,
