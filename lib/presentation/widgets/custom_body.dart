@@ -175,6 +175,7 @@ class RefreshableListView extends StatelessWidget {
             deliveryOrdersCubit.inStockAction(
               token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
               id: itemId,
+              tenantUUID: BlocProvider.of<AuthenticationCubit>(context).state.tenantUUID!
             ),
           );
         },

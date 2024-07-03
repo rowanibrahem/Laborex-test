@@ -27,8 +27,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
     if (context.mounted) {
       BlocProvider.of<DeliveryOrdersCubit>(context).fetchOrders(
-        token: accessToken,
-        // token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+        // token: accessToken,
+        token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+        tenantUUID: BlocProvider.of<AuthenticationCubit>(context).state.tenantUUID!,
       );
     }
   }

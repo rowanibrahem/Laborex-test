@@ -10,9 +10,9 @@ import 'presentation/screens/splash_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await CacheNetwork.cachInstialization();
-  accessToken= (await CacheNetwork.getCacheData(key: "access_token"))!;
-  publicKey=(await CacheNetwork.getCacheData(key: "publicKey"))!;
+  await CacheNetwork.cacheInitialization();
+  accessToken= (await CacheNetwork.getStringCacheData(key: "access_token"))!;
+  publicKey=(await CacheNetwork.getStringCacheData(key: "publicKey"))!;
   runApp(const MyApp());
 }
 

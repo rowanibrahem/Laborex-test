@@ -9,6 +9,7 @@ part 'delivery_orders_state.dart';
 
 class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
   RemoteRepo? _remoteRepo;
+
   DeliveryOrdersCubit({
     RemoteRepo? remoteRepo,
   })  : _remoteRepo = remoteRepo,
@@ -39,6 +40,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
   /// [LoadedState] with the new orders.
   Future<void> fetchOrders({
     required String token,
+    required String tenantUUID,
   }) async {
     //needed to make sure dio and apiService are initialized first
 
@@ -46,7 +48,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
 
     try {
       List<DeliverOrderModel> allDeliveryOrders =
-          await _remoteRepo!.getOrders(token);
+          await _remoteRepo!.getOrders(token: token, tenantUUID: tenantUUID);
 
       //*
       stockList = allDeliveryOrders
@@ -74,14 +76,17 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
       }
     }
   }
-/// This function is called to perform the action of starting the delivery process.
+
+  /// This function is called to perform the action of starting the delivery process.
   Future<void> inStockAction({
     required String token,
     required String id,
+    required String tenantUUID,
   }) async {
     emit(const LoadingState());
     try {
-      final response = await _remoteRepo!.startDelivery(token, id);
+      final response = await _remoteRepo!
+          .startDelivery(token: token, orderId: id, tenantUUID: tenantUUID);
 
       emit(ShowMessageState(message: response));
     } catch (e) {
@@ -93,25 +98,28 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     }
     fetchOrders(
       token: token,
+      tenantUUID: tenantUUID,
     );
   }
-/// This function is called to perform the action of finishing the delivery process.
+
+  /// This function is called to perform the action of finishing the delivery process.
   Future<void> deliveredAction({
     required String token,
     required String id,
     required String paymentType,
     required String returnType,
     required String description,
+    required String tenantUUID,
   }) async {
     emit(const LoadingState());
     try {
       final response = await _remoteRepo!.finishOrder(
-        token,
-        id,
-        paymentType,
-        returnType,
-        description,
-      );
+          token: token,
+          orderId: id,
+          paymentType: paymentType,
+          returnType: returnType,
+          description: description,
+          tenantUUID: tenantUUID);
       emit(ShowMessageState(message: response));
     } catch (e) {
       if (e is CustomError) {
@@ -122,7 +130,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     }
 
     fetchOrders(
-      token: token,
+      token: token, tenantUUID: tenantUUID,
     );
   }
 }

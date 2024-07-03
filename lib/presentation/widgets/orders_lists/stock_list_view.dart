@@ -19,6 +19,7 @@ class StockListView extends StatelessWidget {
         : RefreshableOrdersListView(
             onTapAction: (itemId, _) => deliveryOrdersCubit.inStockAction(
               token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+              tenantUUID: BlocProvider.of<AuthenticationCubit>(context).state.tenantUUID!,
               id: itemId,
             ),
             orderList: stockList,

@@ -24,6 +24,7 @@ class RefreshableOrdersListView extends StatelessWidget {
     Future<void>.delayed(const Duration(seconds: 0));
     BlocProvider.of<DeliveryOrdersCubit>(ctx).fetchOrders(
       token: BlocProvider.of<AuthenticationCubit>(ctx).state.token!,
+      tenantUUID: BlocProvider.of<AuthenticationCubit>(ctx).state.tenantUUID!,
     );
   }
 

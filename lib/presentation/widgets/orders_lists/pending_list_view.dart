@@ -38,6 +38,9 @@ class PendingListView extends StatelessWidget {
                             token: BlocProvider.of<AuthenticationCubit>(context)
                                 .state
                                 .token!,
+                            tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                                .state
+                                .tenantUUID!,
                             id: itemId,
                             paymentType: paymentType,
                             returnType: returnType,
