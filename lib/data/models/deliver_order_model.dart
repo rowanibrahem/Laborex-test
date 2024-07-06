@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 import 'order_description_list.dart';
 
-enum OrderStatus { inStock, inProgress, delivered }
+enum OrderStatus { inStock, inProgress, delivered,cancelled }
 
 OrderStatus parseOrderStatus(String status) {
   if (status == 'ORDER_CREATED') {
@@ -13,9 +13,9 @@ OrderStatus parseOrderStatus(String status) {
     return OrderStatus.inProgress;
   } else if (status == 'DELIVERED') {
     return OrderStatus.delivered;
+  }else{
+    return OrderStatus.cancelled;
   }
-
-  throw Exception('Unknown status: $status');
 }
 
 class DeliverOrderModel extends Equatable {
