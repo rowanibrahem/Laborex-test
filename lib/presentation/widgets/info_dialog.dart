@@ -167,7 +167,7 @@ class _InfoDialogState extends State<InfoDialog> {
                 Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
-                    "تفاصل المرتجع",
+                    "قيمة المرتجع",
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: const Color(0xbb696969),
@@ -179,7 +179,28 @@ class _InfoDialogState extends State<InfoDialog> {
                 Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
-                      (widget.deliveryOrder.orderDescriptionList?.description) ??
+                      (widget.deliveryOrder.orderDescriptionList?.returnedAmount.toString()) ??
+                          "لا يوجد تفاصيل",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontSize: 14.sp,
+                          )),
+                ),
+               Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    "عدد أصناف المرتجع",
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xbb696969),
+                          fontSize: 14.sp,
+                        ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                      (widget.deliveryOrder.orderDescriptionList?.returnedItemsNum.toString()) ??
                           "لا يوجد تفاصيل",
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             fontSize: 14.sp,

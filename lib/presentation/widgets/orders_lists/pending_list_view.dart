@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
@@ -32,19 +34,21 @@ class PendingListView extends StatelessWidget {
                         onConfirm: (
                           String paymentType,
                           String returnType,
-                          String description,
+                          String returnedAmount,
+                          String returnedItemsNum,
                         ) {
                           deliveryOrdersCubit.deliveredAction(
                             token: BlocProvider.of<AuthenticationCubit>(context)
                                 .state
                                 .token!,
-                            tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
-                                .state
-                                .tenantUUID!,
+                            tenantUUID:
+                                BlocProvider.of<AuthenticationCubit>(context)
+                                    .state
+                                    .tenantUUID!,
                             id: itemId,
                             paymentType: paymentType,
-                            returnType: returnType,
-                            description: description,
+                            returnType: returnType, returnedAmount: double.parse(returnedAmount), returnedItemsNum: int.parse(returnedItemsNum),
+
                           );
                         },
                       )

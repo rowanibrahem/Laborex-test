@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,6 +15,7 @@ void main() async{
   await CacheNetwork.cacheInitialization();
   accessToken= (await CacheNetwork.getStringCacheData(key: "access_token"))!;
   publicKey=(await CacheNetwork.getStringCacheData(key: "publicKey"))!;
+
   runApp(const MyApp());
 }
 

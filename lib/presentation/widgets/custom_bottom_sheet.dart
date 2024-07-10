@@ -11,7 +11,8 @@ class CustomBottomSheet extends StatefulWidget {
   final Function(
     String paymentType,
     String returnType,
-    String description,
+    String returnedAmount,
+    String returnedItemsNum,
   ) onConfirm;
 
   @override
@@ -21,13 +22,14 @@ class CustomBottomSheet extends StatefulWidget {
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
   PaymentType selectedPayment = PaymentType.cash;
   ReturnType selectedReturn = ReturnType.noReturn;
-  final descriptionController = TextEditingController();
+  final returnedAmountController = TextEditingController();
+  final returnedItemsNumController = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 647.h,
+      // height: 647.h,
       padding: EdgeInsets.all(24.w),
       child: SingleChildScrollView(
         child:
@@ -101,33 +103,61 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   });
                 }),
           ),
-          TextField(
-            onChanged: (e){print(e);
-              print(descriptionController.text);
-              },
-            controller: descriptionController,
-            decoration: InputDecoration(
-              labelText: 'ادخل تفاصيل المرتجع',
-              enabled: (selectedReturn != ReturnType.noReturn),
-              hintText: (selectedReturn == ReturnType.noReturn)
-                  ? "لا يوجد مرتجع "
-                  : null,
-              border: const OutlineInputBorder(),
+              Text(
+                "أدخل قيمة المرتجع",
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
+                ),
+              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextField(
+
+              controller: returnedAmountController,
+              decoration: InputDecoration(
+                labelText: 'ادخل قيمه المرتجع',
+                enabled: (selectedReturn != ReturnType.noReturn),
+                hintText: (selectedReturn == ReturnType.noReturn)
+                    ? "لا يوجد مرتجع "
+                    : null,
+                border: const OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
             ),
-            minLines: 2,
-            keyboardType: TextInputType.multiline,
-            maxLines: 5,
+          ),
+              Text(
+                "أدخل عدد أصناف المرتجع",
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
+                ),
+              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextField(
+              controller: returnedItemsNumController,
+              decoration: InputDecoration(
+                labelText: 'ادخل عدد الأصناف',
+                enabled: (selectedReturn != ReturnType.noReturn),
+                hintText: (selectedReturn == ReturnType.noReturn)
+                    ? "لا يوجد مرتجع "
+                    : null,
+                border: const OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
           ),
           Align(
             alignment: Alignment.center,
             child: ElevatedButton(
 
               onPressed: () {
-                print(descriptionController.text);
                 widget.onConfirm(
                   selectedPayment.name,
                   selectedReturn.name,
-                  descriptionController.text,
+                  returnedAmountController.text,
+                  returnedItemsNumController.text
                 );
                 Navigator.pop(context);
               },

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:laborex_distribution_app/core/errors/custom_error.dart';
@@ -67,6 +68,7 @@ class RemoteRepo {
         throw ServerError.fromResponse(response);
       } else {
         final List<dynamic> data = response.data;
+        print(data);
         return data.map((item) => DeliverOrderModel.fromMap(item)).toList();
       }
     });
@@ -100,7 +102,8 @@ class RemoteRepo {
       required String orderId,
       required String paymentType,
       required String returnType,
-      required String description,
+        required double returnedAmount,
+        required int returnedItems,
       required String tenantUUID}) async {
     return _handleErrors<String>(() async {
       final response = await _dio.post(
@@ -108,7 +111,9 @@ class RemoteRepo {
         data: {
           "paymentType": paymentType,
           "returnType": returnType,
-          "description": description,
+          "returnedAmount": returnedAmount,
+          "returnedItems":returnedItems
+
         },
         options: Options(
           headers: {

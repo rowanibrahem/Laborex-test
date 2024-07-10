@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:laborex_distribution_app/core/errors/custom_error.dart';
@@ -108,7 +110,8 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     required String id,
     required String paymentType,
     required String returnType,
-    required String description,
+    required double returnedAmount,
+    required int returnedItemsNum,
     required String tenantUUID,
   }) async {
     emit(const LoadingState());
@@ -118,8 +121,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
           orderId: id,
           paymentType: paymentType,
           returnType: returnType,
-          description: description,
-          tenantUUID: tenantUUID);
+          tenantUUID: tenantUUID, returnedAmount: returnedAmount, returnedItems: returnedItemsNum);
       emit(ShowMessageState(message: response));
     } catch (e) {
       if (e is CustomError) {
