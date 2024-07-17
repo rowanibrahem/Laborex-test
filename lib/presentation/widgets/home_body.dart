@@ -34,6 +34,11 @@ class HomeBody extends StatelessWidget {
               content: Text(state.message!),
             ),
           );
+        }else if(state is SentReturnRequest){
+          showDialog(context: context, builder: (context)=>AlertDialog(
+            icon: Image.asset('assets/img.png'),
+            title: Text(state.message!),
+          ));
         }
       },
       builder: (context, state) {

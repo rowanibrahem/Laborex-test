@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:laborex_distribution_app/data/data%20source/cacheNetwork.dart';
@@ -118,6 +120,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
             );
     } catch (e) {
       if (e is CustomError) {
+        log(e.errorMessage);
         emit(ErrorOccurredState(customError: e));
       } else {
         emit(LoggedOut());

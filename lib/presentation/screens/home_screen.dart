@@ -20,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late RemoteRepo remoteRepo;
 
   late TabController _topTabController;
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+
 
   @override
   initState() {
@@ -54,9 +56,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
+        key: _key,
         appBar: LaborexAppBar(
           context: context,
-          topTabController: _topTabController,
+          topTabController: _topTabController, scaffoldKey: _key,
         ),
         drawer: CustomDrawer(
           context: context,

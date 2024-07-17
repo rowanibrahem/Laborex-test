@@ -79,6 +79,7 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
               ],
             ),
           ),
+          
         ],
       ),
     );

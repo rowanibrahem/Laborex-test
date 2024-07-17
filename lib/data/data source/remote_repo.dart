@@ -63,12 +63,11 @@ class RemoteRepo {
           },
         ),
       );
-
       if (response.statusCode != 200) {
         throw ServerError.fromResponse(response);
       } else {
         final List<dynamic> data = response.data;
-        print(data);
+        log(data.toString());
         return data.map((item) => DeliverOrderModel.fromMap(item)).toList();
       }
     });
@@ -102,8 +101,8 @@ class RemoteRepo {
       required String orderId,
       required String paymentType,
       required String returnType,
-        required double returnedAmount,
-        required int returnedItems,
+      required double returnedAmount,
+      required int returnedItems,
       required String tenantUUID}) async {
     return _handleErrors<String>(() async {
       final response = await _dio.post(
@@ -112,8 +111,40 @@ class RemoteRepo {
           "paymentType": paymentType,
           "returnType": returnType,
           "returnedAmount": returnedAmount,
-          "returnedItems":returnedItems
+          "returnedItems": returnedItems
+        },
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "publicKey": publicKey,
+            "x-tenant-id": tenantUUID
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw ServerError.fromResponse(response);
+      }
+    });
+  }
 
+  Future<String> createReturn(
+      {required String token,
+        required String orderId,
+        required String paymentType,
+        required String returnType,
+        required double returnedAmount,
+        required int returnedItems,
+        required String tenantUUID}) async {
+    return _handleErrors<String>(() async {
+      final response = await _dio.post(
+        '${Constants.createReturn}$orderId',
+        data: {
+          "paymentType": paymentType,
+          "returnType": returnType,
+          "returnedAmount": returnedAmount,
+          "returnedItems": returnedItems
         },
         options: Options(
           headers: {

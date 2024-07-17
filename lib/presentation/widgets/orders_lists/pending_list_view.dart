@@ -36,7 +36,8 @@ class PendingListView extends StatelessWidget {
                           String returnType,
                           String returnedAmount,
                           String returnedItemsNum,
-                        ) {
+                        )
+                    {
                           deliveryOrdersCubit.deliveredAction(
                             token: BlocProvider.of<AuthenticationCubit>(context)
                                 .state
@@ -47,7 +48,7 @@ class PendingListView extends StatelessWidget {
                                     .tenantUUID!,
                             id: itemId,
                             paymentType: paymentType,
-                            returnType: returnType, returnedAmount: double.parse(returnedAmount), returnedItemsNum: int.parse(returnedItemsNum),
+                            returnType: returnType, returnedAmount: returnedAmount.isNotEmpty?double.parse(returnedAmount):0, returnedItemsNum: returnedItemsNum.isNotEmpty?int.parse(returnedItemsNum):0,
 
                           );
                         },

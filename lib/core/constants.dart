@@ -7,4 +7,5 @@ class Constants {
   static const loginUrl = '$baseUrl/auth/login';
   static const deliveryStartUrl = '$baseUrl/order/delivery-start/';
   static const finishOrderUrl = '$baseUrl/order/finish-order/';
+  static const createReturn = '$baseUrl/offline-return/';
 }

@@ -4,9 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/enums.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-  const CustomBottomSheet({
+   const CustomBottomSheet({
     super.key,
     required this.onConfirm,
+    this.buttonInvisible=false
   });
   final Function(
     String paymentType,
@@ -14,6 +15,8 @@ class CustomBottomSheet extends StatefulWidget {
     String returnedAmount,
     String returnedItemsNum,
   ) onConfirm;
+
+  final bool buttonInvisible;
 
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
@@ -148,7 +151,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               keyboardType: TextInputType.number,
             ),
           ),
-          Align(
+              !widget.buttonInvisible? Align(
             alignment: Alignment.center,
             child: ElevatedButton(
 
@@ -163,7 +166,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               },
               child: const Text('تأكيد'),
             ),
-          ),
+          ):const SizedBox() ,
         ]),
       ),
     );

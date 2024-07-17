@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:bloc/bloc.dart';
@@ -17,6 +18,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
   })  : _remoteRepo = remoteRepo,
         super(const DeliveryOrdersInitial());
 
+  List<DeliverOrderModel> allDeliveryOrders = [];
   List<DeliverOrderModel> stockList = [];
   List<DeliverOrderModel> deliveredList = [];
   List<DeliverOrderModel> pendingList = [];
@@ -49,10 +51,10 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     emit(const LoadingState());
 
     try {
-      List<DeliverOrderModel> allDeliveryOrders =
+      allDeliveryOrders =
           await _remoteRepo!.getOrders(token: token, tenantUUID: tenantUUID);
-
       //*
+      filteredOrders = allDeliveryOrders;
       stockList = allDeliveryOrders
           .where((element) => element.orderStatus == OrderStatus.inStock)
           .toList();
@@ -71,6 +73,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
       ));
     } catch (e) {
       if (e is CustomError) {
+        log(e.errorMessage);
         emit(ErrorOccurredState(customError: e));
       } else {
         //TODO maybe there is better options for other types of error
@@ -121,7 +124,9 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
           orderId: id,
           paymentType: paymentType,
           returnType: returnType,
-          tenantUUID: tenantUUID, returnedAmount: returnedAmount, returnedItems: returnedItemsNum);
+          tenantUUID: tenantUUID,
+          returnedAmount: returnedAmount,
+          returnedItems: returnedItemsNum);
       emit(ShowMessageState(message: response));
     } catch (e) {
       if (e is CustomError) {
@@ -132,7 +137,51 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
     }
 
     fetchOrders(
-      token: token, tenantUUID: tenantUUID,
+      token: token,
+      tenantUUID: tenantUUID,
     );
+  }
+
+  Future<void> createReturn({
+    required String token,
+    required String id,
+    required String paymentType,
+    required String returnType,
+    required double returnedAmount,
+    required int returnedItemsNum,
+    required String tenantUUID,
+  }) async {
+    emit(const LoadingState());
+    try {
+      final response = await _remoteRepo!.createReturn(
+          token: token,
+          orderId: id,
+          paymentType: paymentType,
+          returnType: returnType,
+          tenantUUID: tenantUUID,
+          returnedAmount: returnedAmount,
+          returnedItems: returnedItemsNum);
+      emit(SentReturnRequest(message: response));
+    } catch (e) {
+      if (e is CustomError) {
+        emit(ErrorOccurredState(customError: e));
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  List<DeliverOrderModel> filteredOrders = [];
+
+  void filterItems(String query) {
+    emit(const LoadingState());
+    if (query.isEmpty) {
+      filteredOrders = allDeliveryOrders;
+    } else {
+      filteredOrders = allDeliveryOrders
+          .where((item) => item.billNumber.toString().startsWith(query))
+          .toList();
+    }
+    emit(const SearchRefreshState());
   }
 }
