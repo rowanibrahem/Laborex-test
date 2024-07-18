@@ -8,7 +8,7 @@ import 'package:laborex_distribution_app/presentation/widgets/bottom_section.dar
 import 'package:laborex_distribution_app/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:laborex_distribution_app/presentation/widgets/info_dialog.dart';
 import 'package:laborex_distribution_app/presentation/widgets/orders_lists/custom_action_button.dart';
-
+import 'package:laborex_distribution_app/presentation/widgets/return_history_dialog.dart';
 import '../../data/models/deliver_order_model.dart';
 
 class SearchOrderCard extends StatefulWidget {
@@ -93,12 +93,29 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
               ? Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32),
-                  child: MaterialButton(
-                    onPressed: () => widget.deliveryOrder.returnOrderHistory==null?returnBottomSheet(widget.deliveryOrder.orderId.toString(),false): widget.deliveryOrder.returnOrderHistory!.status==ReturnedOrderStatus.pending?returnBottomSheet(widget.deliveryOrder.orderId.toString(),true):returnBottomSheet(widget.deliveryOrder.orderId.toString(),false),
-                    color: Theme.of(context).primaryColor,
-                    minWidth: double.infinity,
-                    textColor: Colors.white,
-                    child:Text(widget.deliveryOrder.returnOrderHistory==null?'طلب تعديل':'التفاصيل'),
+                  child: Column(
+                    children: [
+                      MaterialButton(
+                        onPressed: () => returnBottomSheet(
+                            widget.deliveryOrder.orderId.toString()),
+                        color: Theme.of(context).primaryColor,
+                        minWidth: double.infinity,
+                        textColor: Colors.white,
+                        child: const Text('طلب تعديل'),
+                      ),
+                       Align(
+                          alignment: Alignment.centerLeft,
+                          child: InkWell(
+                            onTap: ()=>showDialog(context: context,builder: (context)=>ReturnHistoryDialog(deliveryOrder: widget.deliveryOrder,)),
+                            child:const Text(
+                              "سجل المرتجعات",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.red),
+                            ),
+                          ))
+                    ],
                   ),
                 )
               : const SizedBox()
@@ -167,36 +184,39 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
     }
   }
 
-  returnBottomSheet(itemId,bool isButtonInvisible) {
+  returnBottomSheet(itemId) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         return Wrap(
           children: [
-            CustomBottomSheet(onConfirm: (
-              String paymentType,
-              String returnType,
-              String returnedAmount,
-              String returnedItemsNum,
-            ) {
-              BlocProvider.of<DeliveryOrdersCubit>(context).createReturn(
-                token:
-                    BlocProvider.of<AuthenticationCubit>(context).state.token!,
-                tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
-                    .state
-                    .tenantUUID!,
-                id: itemId,
-                paymentType: paymentType,
-                returnType: returnType,
-                returnedAmount: returnedAmount.isNotEmpty
-                    ? double.parse(returnedAmount)
-                    : 0,
-                returnedItemsNum: returnedItemsNum.isNotEmpty
-                    ? int.parse(returnedItemsNum)
-                    : 0,
-              );
-            },buttonInvisible: isButtonInvisible,)
+            CustomBottomSheet(
+              onConfirm: (
+                String paymentType,
+                String returnType,
+                String returnedAmount,
+                String returnedItemsNum,
+              ) {
+                BlocProvider.of<DeliveryOrdersCubit>(context).createReturn(
+                  token: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .token!,
+                  tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .tenantUUID!,
+                  id: itemId,
+                  paymentType: paymentType,
+                  returnType: returnType,
+                  returnedAmount: returnedAmount.isNotEmpty
+                      ? double.parse(returnedAmount)
+                      : 0,
+                  returnedItemsNum: returnedItemsNum.isNotEmpty
+                      ? int.parse(returnedItemsNum)
+                      : 0,
+                );
+              },
+            )
           ],
         );
       },

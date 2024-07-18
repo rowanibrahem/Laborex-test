@@ -161,6 +161,7 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
           tenantUUID: tenantUUID,
           returnedAmount: returnedAmount,
           returnedItems: returnedItemsNum);
+      fetchOrders(token: token, tenantUUID: tenantUUID);
       emit(SentReturnRequest(message: response));
     } catch (e) {
       if (e is CustomError) {

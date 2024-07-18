@@ -2,17 +2,16 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-enum ReturnedOrderStatus { pending, accepted, rejected}
+enum ReturnedOrderStatus { pending, returned, unhandled}
 
 ReturnedOrderStatus parseOrderStatus(String status) {
   if (status == 'PENDING') {
     return ReturnedOrderStatus.pending;
-  } else if (status == 'ACCEPTED') {
-    return ReturnedOrderStatus.accepted;
-  } else if (status == 'REJECTED') {
-    return ReturnedOrderStatus.rejected;
+  } else if (status == 'RETURNED') {
+    return ReturnedOrderStatus.returned;
+
   }else{
-    throw Exception('Unhandled Return Order Status');
+    return ReturnedOrderStatus.unhandled;
   }
 }
 
