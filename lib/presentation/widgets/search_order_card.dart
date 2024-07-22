@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laborex_distribution_app/core/enums.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
 import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
 import 'package:laborex_distribution_app/presentation/widgets/bottom_section.dart';
 import 'package:laborex_distribution_app/presentation/widgets/custom_bottom_sheet.dart';
 import 'package:laborex_distribution_app/presentation/widgets/info_dialog.dart';
 import 'package:laborex_distribution_app/presentation/widgets/orders_lists/custom_action_button.dart';
+import 'package:laborex_distribution_app/presentation/widgets/return_bottom_sheet.dart';
 import 'package:laborex_distribution_app/presentation/widgets/return_history_dialog.dart';
 import '../../data/models/deliver_order_model.dart';
 
@@ -22,6 +24,7 @@ class SearchOrderCard extends StatefulWidget {
 }
 
 class _SearchOrderCardState extends State<SearchOrderCard> {
+
   @override
   Widget build(BuildContext context) {
     var customDivider = SizedBox(
@@ -95,18 +98,23 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
                   child: Column(
                     children: [
                       MaterialButton(
-                        onPressed: () => returnBottomSheet(
-                            widget.deliveryOrder.orderId.toString()),
+                        onPressed: () {
+                          returnBottomSheet(item: widget.deliveryOrder);
+                        },
                         color: Theme.of(context).primaryColor,
                         minWidth: double.infinity,
                         textColor: Colors.white,
                         child: const Text('طلب تعديل'),
                       ),
-                       Align(
+                      Align(
                           alignment: Alignment.centerLeft,
                           child: InkWell(
-                            onTap: ()=>showDialog(context: context,builder: (context)=>ReturnHistoryDialog(deliveryOrder: widget.deliveryOrder,)),
-                            child:const Text(
+                            onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => ReturnHistoryDialog(
+                                      deliveryOrder: widget.deliveryOrder,
+                                    )),
+                            child: const Text(
                               "سجل المرتجعات",
                               style: TextStyle(
                                   color: Colors.red,
@@ -183,39 +191,17 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
     }
   }
 
-  returnBottomSheet(itemId) {
+  returnBottomSheet({required DeliverOrderModel item}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
+      builder: (context){
+        print("inner refresh");
+        // print(selectedReturn!.name);
         return Wrap(
           children: [
-            CustomBottomSheet(
-              onConfirm: (
-                String paymentType,
-                String returnType,
-                String returnedAmount,
-                String returnedItemsNum,
-              ) {
-                BlocProvider.of<DeliveryOrdersCubit>(context).createReturn(
-                  token: BlocProvider.of<AuthenticationCubit>(context)
-                      .state
-                      .token!,
-                  tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
-                      .state
-                      .tenantUUID!,
-                  id: itemId,
-                  paymentType: paymentType,
-                  returnType: returnType,
-                  returnedAmount: returnedAmount.isNotEmpty
-                      ? double.parse(returnedAmount)
-                      : 0,
-                  returnedItemsNum: returnedItemsNum.isNotEmpty
-                      ? int.parse(returnedItemsNum)
-                      : 0,
-                );
-              },
-            )
+            ReturnBottomSheet(item: item)
+
           ],
         );
       },
