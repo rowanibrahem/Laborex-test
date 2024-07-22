@@ -171,7 +171,7 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
                       ? int.parse(returnedItemsNum)
                       : 0,
                 );
-              },
+              }, item: widget.deliveryOrder
             )
           ],
         );

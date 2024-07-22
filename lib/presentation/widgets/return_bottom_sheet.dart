@@ -103,6 +103,7 @@ class _ReturnBottomSheetState extends State<ReturnBottomSheet> {
             alignment: Alignment.center,
             child: ElevatedButton(
               onPressed: () {
+                print(widget.item.billTotalPrice);
                 BlocProvider.of<DeliveryOrdersCubit>(context).createReturn(
                   token: BlocProvider.of<AuthenticationCubit>(context)
                       .state
@@ -113,12 +114,14 @@ class _ReturnBottomSheetState extends State<ReturnBottomSheet> {
                   id: widget.item.orderId.toString(),
                   paymentType: widget.item.orderDescriptionList!.paymentType!,
                   returnType: selectedReturn.name,
-                  returnedAmount: returnedAmountController.text.isNotEmpty
-                      ? double.parse(returnedAmountController.text)
-                      : 0,
-                  returnedItemsNum: returnedItemsNumController.text.isNotEmpty
-                      ? int.parse(returnedItemsNumController.text)
-                      : 0,
+                    returnedAmount:selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice!:double.parse(returnedAmountController.text.isNotEmpty?returnedAmountController.text:'0'),
+                  returnedItemsNum:selectedReturn==ReturnType.fullReturn?widget.item.numberOfItems!:int.parse(returnedAmountController.text.isNotEmpty?returnedAmountController.text:'0'),
+                  // returnedAmount: returnedAmountController.text.isNotEmpty
+                  //     ? selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice!:double.parse(returnedAmountController.text)
+                  //     : 0,
+                  // returnedItemsNum: returnedItemsNumController.text.isNotEmpty
+                  //     ? selectedReturn==ReturnType.fullReturn? widget.item.numberOfItems!:int.parse(returnedItemsNumController.text)
+                  //     : 0,
                 );
                 Navigator.pop(context);
               },

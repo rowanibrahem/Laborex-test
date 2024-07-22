@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laborex_distribution_app/data/models/deliver_order_model.dart';
 
 import '../../core/enums.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-   const CustomBottomSheet({
+  const CustomBottomSheet({
     super.key,
     required this.onConfirm,
+    required this.item,
   });
+
   final Function(
     String paymentType,
     String returnType,
@@ -15,6 +18,7 @@ class CustomBottomSheet extends StatefulWidget {
     String returnedItemsNum,
   ) onConfirm;
 
+  final DeliverOrderModel item;
 
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
@@ -26,15 +30,13 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   final returnedAmountController = TextEditingController();
   final returnedItemsNumController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
       // height: 647.h,
       padding: EdgeInsets.all(24.w),
       child: SingleChildScrollView(
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             "اختر طريقة الدفع",
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -104,62 +106,57 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   });
                 }),
           ),
-              Text(
-                "أدخل قيمة المرتجع",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          Text(
+            "أدخل قيمة المرتجع",
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
                 ),
-              ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextField(
-
               controller: returnedAmountController,
               decoration: InputDecoration(
-                labelText: 'ادخل قيمه المرتجع',
-                enabled: (selectedReturn != ReturnType.noReturn),
-                hintText: (selectedReturn == ReturnType.noReturn)
-                    ? "لا يوجد مرتجع "
-                    : null,
+                labelText: selectedReturn == ReturnType.fullReturn
+                    ? widget.item.billTotalPrice.toString()
+                    : 'ادخل قيمه المرتجع',
                 border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
+              enabled: selectedReturn == ReturnType.partialReturn,
             ),
           ),
-              Text(
-                "أدخل عدد أصناف المرتجع",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          Text(
+            "أدخل عدد أصناف المرتجع",
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
                 ),
-              ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextField(
               controller: returnedItemsNumController,
               decoration: InputDecoration(
-                labelText: 'ادخل عدد الأصناف',
-                enabled: (selectedReturn != ReturnType.noReturn),
-                hintText: (selectedReturn == ReturnType.noReturn)
-                    ? "لا يوجد مرتجع "
-                    : null,
+                labelText: selectedReturn == ReturnType.fullReturn
+                    ? widget.item.numberOfItems.toString()
+                    : 'ادخل عدد الأصناف',
                 border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
+              enabled: selectedReturn == ReturnType.partialReturn,
             ),
           ),
-              Align(
+          Align(
             alignment: Alignment.center,
             child: ElevatedButton(
-
               onPressed: () {
                 widget.onConfirm(
-                  selectedPayment.name,
-                  selectedReturn.name,
-                  returnedAmountController.text,
-                  returnedItemsNumController.text
-                );
+                    selectedPayment.name,
+                    selectedReturn.name,
+                    selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice.toString():returnedAmountController.text,
+                    selectedReturn==ReturnType.fullReturn?widget.item.numberOfItems.toString():returnedItemsNumController.text);
                 Navigator.pop(context);
               },
               child: const Text('تأكيد'),

@@ -23,7 +23,7 @@ class PendingListView extends StatelessWidget {
         ? const RefreshableOrdersListView.empty()
         : RefreshableOrdersListView(
             orderList: pendingList,
-            onTapAction: (itemId, _) {
+            onTapAction: (itemId, index) {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
@@ -51,7 +51,7 @@ class PendingListView extends StatelessWidget {
                             returnType: returnType, returnedAmount: returnedAmount.isNotEmpty?double.parse(returnedAmount):0, returnedItemsNum: returnedItemsNum.isNotEmpty?int.parse(returnedItemsNum):0,
 
                           );
-                        },
+                        }, item: pendingList[index],
                       )
                     ],
                   );
