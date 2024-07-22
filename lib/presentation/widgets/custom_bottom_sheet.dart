@@ -7,7 +7,6 @@ class CustomBottomSheet extends StatefulWidget {
    const CustomBottomSheet({
     super.key,
     required this.onConfirm,
-    this.buttonInvisible=false
   });
   final Function(
     String paymentType,
@@ -16,7 +15,6 @@ class CustomBottomSheet extends StatefulWidget {
     String returnedItemsNum,
   ) onConfirm;
 
-  final bool buttonInvisible;
 
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
@@ -151,7 +149,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               keyboardType: TextInputType.number,
             ),
           ),
-              !widget.buttonInvisible? Align(
+              Align(
             alignment: Alignment.center,
             child: ElevatedButton(
 
@@ -166,7 +164,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               },
               child: const Text('تأكيد'),
             ),
-          ):const SizedBox() ,
+          ),
         ]),
       ),
     );
