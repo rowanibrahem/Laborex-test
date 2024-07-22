@@ -22,6 +22,7 @@ class RemoteRepo {
       return await action();
     } catch (error) {
       if (error is DioException) {
+        print(error.response);
         throw ServerError.fromDioError(error);
       } else if (error is CustomError) {
         rethrow;
@@ -158,6 +159,33 @@ class RemoteRepo {
         return response.data;
       } else {
         throw ServerError.fromResponse(response);
+      }
+    });
+  }
+
+  Future<List<DeliverOrderModel>> filterOrderByBillNumber(
+      {required String token, required String tenantUUID, required billNumber}) async {
+    return _handleErrors<List<DeliverOrderModel>>(() async {
+      final response = await _dio.get(
+        Constants.filterUsingBillNumber,
+        queryParameters: {
+          'billNumber': billNumber
+        },
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "publicKey": publicKey,
+            "x-tenant-id": tenantUUID
+          },
+        ),
+      );
+      log(response.statusCode.toString());
+      if (response.statusCode != 200) {
+        throw ServerError.fromResponse(response);
+      } else {
+        final List<dynamic> data = response.data;
+        log(data.toString());
+        return data.map((item) => DeliverOrderModel.fromMap(item)).toList();
       }
     });
   }

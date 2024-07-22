@@ -174,14 +174,12 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
 
   List<DeliverOrderModel> filteredOrders = [];
 
-  void filterItems(String query) {
+  void filterItems({required String query,required String token,required String tenantUUID,}) async{
     emit(const LoadingState());
     if (query.isEmpty) {
       filteredOrders = allDeliveryOrders;
     } else {
-      filteredOrders = allDeliveryOrders
-          .where((item) => item.billNumber.toString().startsWith(query))
-          .toList();
+      filteredOrders = await _remoteRepo!.filterOrderByBillNumber(token: token,tenantUUID: tenantUUID,billNumber: query);
     }
     emit(const SearchRefreshState());
   }
