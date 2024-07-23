@@ -23,7 +23,6 @@ class DeliveredList extends StatelessWidget {
             onTapAction: (String itemId, int index) {
               showDialog(
                   context: context,
-                  
                   builder: (BuildContext context) {
                     return InfoDialog(
                       deliveryOrder: deliveredList[index],

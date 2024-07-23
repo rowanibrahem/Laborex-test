@@ -102,11 +102,15 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
                         textColor: Colors.white,
                         child: const Text('طلب تعديل'),
                       ),
-                       Align(
+                      Align(
                           alignment: Alignment.centerLeft,
                           child: InkWell(
-                            onTap: ()=>showDialog(context: context,builder: (context)=>ReturnHistoryDialog(deliveryOrder: widget.deliveryOrder,)),
-                            child:const Text(
+                            onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => ReturnHistoryDialog(
+                                      deliveryOrder: widget.deliveryOrder,
+                                    )),
+                            child: const Text(
                               "سجل المرتجعات",
                               style: TextStyle(
                                   color: Colors.red,

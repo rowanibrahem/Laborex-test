@@ -58,7 +58,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   bool isUserExpired(int expirationDate) {
-    return expirationDate==0 || expirationDate < DateTime.now().millisecond;
+    return expirationDate == 0 || expirationDate < DateTime.now().millisecond;
   }
 
   Future<bool> isUserLoggedIn() async {
@@ -71,8 +71,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     expirationDateInMilliseconds =
         await CacheNetwork.getIntCacheData(key: 'expiredAt') ?? 0;
 
-    final bool isUserExpiredVal=isUserExpired(expirationDateInMilliseconds);
-    if (token.isNotEmpty && token != ''&& !isUserExpiredVal) {
+    final bool isUserExpiredVal = isUserExpired(expirationDateInMilliseconds);
+    if (token.isNotEmpty && token != '' && !isUserExpiredVal) {
       emit(LoggedIn(
           newToken: token,
           tenantUUID: tenantUUID,

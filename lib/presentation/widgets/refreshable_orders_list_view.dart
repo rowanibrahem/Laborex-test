@@ -20,7 +20,7 @@ class RefreshableOrdersListView extends StatelessWidget {
   const RefreshableOrdersListView.empty({
     super.key,
   })  : orderList = const [],
-        isSearchScreen=false,
+        isSearchScreen = false,
         onTapAction = null;
 
   Future<void> _refreshData(BuildContext ctx) async {
@@ -31,12 +31,11 @@ class RefreshableOrdersListView extends StatelessWidget {
     );
   }
 
-  const RefreshableOrdersListView({
-    super.key,
-    required this.onTapAction,
-    required this.orderList,
-    this.isSearchScreen=false
-  });
+  const RefreshableOrdersListView(
+      {super.key,
+      required this.onTapAction,
+      required this.orderList,
+      this.isSearchScreen = false});
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +53,15 @@ class RefreshableOrdersListView extends StatelessWidget {
           : ListView.builder(
               itemCount: orderList.length,
               itemBuilder: (_, int index) {
-                return !isSearchScreen!?DeliveryOrderCard(
-                  deliveryOrder: orderList[index],
-                  onTapAction: (itemId) => onTapAction!(itemId, index),
-                ):SearchOrderCard(deliveryOrder: orderList[index],
-                  onTapAction: (itemId) => onTapAction!(itemId, index),);
+                return !isSearchScreen!
+                    ? DeliveryOrderCard(
+                        deliveryOrder: orderList[index],
+                        onTapAction: (itemId) => onTapAction!(itemId, index),
+                      )
+                    : SearchOrderCard(
+                        deliveryOrder: orderList[index],
+                        onTapAction: (itemId) => onTapAction!(itemId, index),
+                      );
               },
             ),
     );

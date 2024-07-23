@@ -14,7 +14,7 @@ void buildNavigationAfterSplash(
   }
 
   if (snapshot.data == false) {
-  // if(accessToken.isEmpty || accessToken=='' || accessToken=='empty'){
+    // if(accessToken.isEmpty || accessToken=='' || accessToken=='empty'){
     if (context.mounted) {
       Navigator.pushReplacement(
         context,

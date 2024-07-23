@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/enums.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-   const CustomBottomSheet({
+  const CustomBottomSheet({
     super.key,
     required this.onConfirm,
   });
@@ -14,7 +14,6 @@ class CustomBottomSheet extends StatefulWidget {
     String returnedAmount,
     String returnedItemsNum,
   ) onConfirm;
-
 
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
@@ -26,15 +25,13 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   final returnedAmountController = TextEditingController();
   final returnedItemsNumController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
       // height: 647.h,
       padding: EdgeInsets.all(24.w),
       child: SingleChildScrollView(
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             "اختر طريقة الدفع",
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -104,17 +101,16 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                   });
                 }),
           ),
-              Text(
-                "أدخل قيمة المرتجع",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          Text(
+            "أدخل قيمة المرتجع",
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
                 ),
-              ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextField(
-
               controller: returnedAmountController,
               decoration: InputDecoration(
                 labelText: 'ادخل قيمه المرتجع',
@@ -127,13 +123,13 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               keyboardType: TextInputType.number,
             ),
           ),
-              Text(
-                "أدخل عدد أصناف المرتجع",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          Text(
+            "أدخل عدد أصناف المرتجع",
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
                 ),
-              ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextField(
@@ -149,17 +145,15 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               keyboardType: TextInputType.number,
             ),
           ),
-              Align(
+          Align(
             alignment: Alignment.center,
             child: ElevatedButton(
-
               onPressed: () {
                 widget.onConfirm(
-                  selectedPayment.name,
-                  selectedReturn.name,
-                  returnedAmountController.text,
-                  returnedItemsNumController.text
-                );
+                    selectedPayment.name,
+                    selectedReturn.name,
+                    returnedAmountController.text,
+                    returnedItemsNumController.text);
                 Navigator.pop(context);
               },
               child: const Text('تأكيد'),

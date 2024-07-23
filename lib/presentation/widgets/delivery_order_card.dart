@@ -17,8 +17,6 @@ class DeliveryOrderCard extends StatefulWidget {
 }
 
 class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
-
-
   @override
   Widget build(BuildContext context) {
     var customDivider = SizedBox(
@@ -32,30 +30,28 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
       child: Column(
         children: [
           ListTile(
-              title: Text(
-                widget.deliveryOrder.clientName!,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.sp,
-                    ),
-              ),
-              subtitle: Text(
-                widget.deliveryOrder.orderId.toString(),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 14.sp,
-                    ),
-              ),
-              // trailing: Text(deliveryOrder.status.toString()),
-              trailing:
-              CustomActionButton(
-                status : widget.deliveryOrder.orderStatus,
-
-                onPressed: () {
-                  widget.onTapAction(widget.deliveryOrder.orderId.toString());
-                },
-
-              ),),
+            title: Text(
+              widget.deliveryOrder.clientName!,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
+                  ),
+            ),
+            subtitle: Text(
+              widget.deliveryOrder.orderId.toString(),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 14.sp,
+                  ),
+            ),
+            // trailing: Text(deliveryOrder.status.toString()),
+            trailing: CustomActionButton(
+              status: widget.deliveryOrder.orderStatus,
+              onPressed: () {
+                widget.onTapAction(widget.deliveryOrder.orderId.toString());
+              },
+            ),
+          ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: Row(
@@ -79,10 +75,8 @@ class _DeliveryOrderCardState extends State<DeliveryOrderCard> {
               ],
             ),
           ),
-          
         ],
       ),
     );
   }
 }
-

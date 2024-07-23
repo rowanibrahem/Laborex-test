@@ -18,10 +18,18 @@ class CustomDrawer extends StatelessWidget {
             decoration: BoxDecoration(),
             child: LaborexTitle(),
           ),
-          SizedBox(height: 630.h,),
+          SizedBox(
+            height: 630.h,
+          ),
           ListTile(
-            leading: const Icon(Icons.logout,color: Colors.red,),
-            title: Text('تسجيل الخروج',style: Theme.of(context).textTheme.titleMedium,),
+            leading: const Icon(
+              Icons.logout,
+              color: Colors.red,
+            ),
+            title: Text(
+              'تسجيل الخروج',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             onTap: () => BlocProvider.of<AuthenticationCubit>(context).logOut(),
           ),
         ],

@@ -1,6 +1,5 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
@@ -28,29 +27,31 @@ class _SearchScreenState extends State<SearchScreen> {
               EasyDebounce.debounce(
                   'search-orders-debounce', const Duration(milliseconds: 200),
                   () {
-                BlocProvider.of<DeliveryOrdersCubit>(context)
-                    .filterItems(query:searchController.text,   token: BlocProvider.of<AuthenticationCubit>(context)
-                    .state
-                    .token!,
-                  tenantUUID:
-                  BlocProvider.of<AuthenticationCubit>(context)
+                BlocProvider.of<DeliveryOrdersCubit>(context).filterItems(
+                  query: searchController.text,
+                  token: BlocProvider.of<AuthenticationCubit>(context)
                       .state
-                      .tenantUUID!,);
+                      .token!,
+                  tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .tenantUUID!,
+                );
               });
             },
             onSubmitted: (value) {
               EasyDebounce.debounce(
                   'search-orders-debounce', const Duration(milliseconds: 200),
-                      () {
-                        BlocProvider.of<DeliveryOrdersCubit>(context)
-                            .filterItems(query:searchController.text,   token: BlocProvider.of<AuthenticationCubit>(context)
-                            .state
-                            .token!,
-                          tenantUUID:
-                          BlocProvider.of<AuthenticationCubit>(context)
-                              .state
-                              .tenantUUID!,);
-                  });
+                  () {
+                BlocProvider.of<DeliveryOrdersCubit>(context).filterItems(
+                  query: searchController.text,
+                  token: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .token!,
+                  tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .tenantUUID!,
+                );
+              });
             },
             controller: searchController,
             decoration: InputDecoration(
@@ -60,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               fillColor: const Color(0xFFF3F4F6),
               filled: true,
-               // labelText: 'ادخل عدد الأصناف',
+              // labelText: 'ادخل عدد الأصناف',
               // enabled: (selectedReturn != ReturnType.noReturn),
               hintText: "ابحث برقم الفاتورة",
               border: const OutlineInputBorder(

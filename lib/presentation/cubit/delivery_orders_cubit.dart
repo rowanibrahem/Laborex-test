@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -174,12 +173,17 @@ class DeliveryOrdersCubit extends Cubit<DeliveryOrdersState> {
 
   List<DeliverOrderModel> filteredOrders = [];
 
-  void filterItems({required String query,required String token,required String tenantUUID,}) async{
+  void filterItems({
+    required String query,
+    required String token,
+    required String tenantUUID,
+  }) async {
     emit(const LoadingState());
     if (query.isEmpty) {
       filteredOrders = allDeliveryOrders;
     } else {
-      filteredOrders = await _remoteRepo!.filterOrderByBillNumber(token: token,tenantUUID: tenantUUID,billNumber: query);
+      filteredOrders = await _remoteRepo!.filterOrderByBillNumber(
+          token: token, tenantUUID: tenantUUID, billNumber: query);
     }
     emit(const SearchRefreshState());
   }
