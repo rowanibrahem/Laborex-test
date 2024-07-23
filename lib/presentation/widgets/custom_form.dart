@@ -25,9 +25,17 @@ class _LoginFormState extends State<LoginForm> {
     return Form(
       key: formkey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 24.h),
+          Text(
+        'تسجيل الدخول',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 24.sp,
+            ),
+          ),
+          SizedBox(height: 30.h),
           PhoneNumberField(controller: _phoneNumberController),
           SizedBox(height: 24.h),
           PasswordField(

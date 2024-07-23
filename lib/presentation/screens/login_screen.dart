@@ -29,7 +29,7 @@ class LoginScreen extends StatelessWidget {
         }
       },
       child: const Scaffold(
-        appBar: LoginAppBar(),
+        // appBar: LoginAppBar(),
         body: Center(
           child: LoginForm(),
         ),

@@ -12,8 +12,8 @@ class PhoneNumberField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
-        labelText: 'رقم التليفون',
-        hintText: "أدخل رقم التليفون",
+        labelText: "أدخل رقم الهاتف",
+        hintText: "رقم الهاتف",
         constraints: BoxConstraints(
           minWidth: 200.w,
           maxWidth: 360.w,
