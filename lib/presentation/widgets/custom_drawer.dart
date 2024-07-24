@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/core/laborex_title.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
+import 'package:laborex_distribution_app/presentation/widgets/confirmation_dialog.dart';
 
 class CustomDrawer extends StatelessWidget {
   final BuildContext context;
@@ -30,7 +31,13 @@ class CustomDrawer extends StatelessWidget {
               'تسجيل الخروج',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            onTap: () => BlocProvider.of<AuthenticationCubit>(context).logOut(),
+            onTap: () => showDialog(
+                context: context,
+                builder: (context) => ConfirmationDialog(
+                    text: 'هل أنت متأكد من تسجيل الخروج',
+                    confirmationFunction: () =>
+                        BlocProvider.of<AuthenticationCubit>(context)
+                            .logOut())),
           ),
         ],
       ),
