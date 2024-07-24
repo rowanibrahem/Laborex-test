@@ -8,16 +8,16 @@ class SearchListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var deliveryOrdersCubit =
-    BlocProvider.of<DeliveryOrdersCubit>(context, listen: true);
+        BlocProvider.of<DeliveryOrdersCubit>(context, listen: true);
 
     var filteredOrders = deliveryOrdersCubit.filteredOrders;
 
     return (filteredOrders.isEmpty)
         ? const RefreshableOrdersListView.empty()
         : RefreshableOrdersListView(
-      onTapAction: (itemId, _){},
-      orderList: filteredOrders,
-      isSearchScreen: true,
-    );
+            onTapAction: (itemId, _) {},
+            orderList: filteredOrders,
+            isSearchScreen: true,
+          );
   }
 }

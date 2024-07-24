@@ -9,12 +9,11 @@ class LaborexAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TabController topTabController;
   final GlobalKey<ScaffoldState> scaffoldKey; // Create a key
 
-   const LaborexAppBar({
-    super.key,
-    required this.context,
-    required this.topTabController,
-    required this.scaffoldKey
-  });
+  const LaborexAppBar(
+      {super.key,
+      required this.context,
+      required this.topTabController,
+      required this.scaffoldKey});
 
   @override
   Size get preferredSize => Size.fromHeight(200.h);
@@ -27,9 +26,14 @@ class LaborexAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-           IconButton(onPressed: ()=>scaffoldKey.currentState!.openDrawer(), icon:const Icon(Icons.menu_outlined)),
-          IconButton(icon:const Icon(Icons.search),onPressed: ()=>Navigator.push(context,MaterialPageRoute(builder: (context)=>SearchScreen())),),
-
+          IconButton(
+              onPressed: () => scaffoldKey.currentState!.openDrawer(),
+              icon: const Icon(Icons.menu_outlined)),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SearchScreen())),
+          ),
         ],
       ),
       actions: const [LaborexTitle()],

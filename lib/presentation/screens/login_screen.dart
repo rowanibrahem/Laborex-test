@@ -20,18 +20,16 @@ class LoginScreen extends StatelessWidget {
               builder: (context) => const HomeScreen(),
             ),
           );
-        }
-        else if (state is ErrorOccurredState) {
+        } else if (state is ErrorOccurredState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.customError?.errorMessage ?? "حدث خطأ"),
             ),
           );
         }
-
       },
       child: const Scaffold(
-        appBar: LoginAppBar(),
+        // appBar: LoginAppBar(),
         body: Center(
           child: LoginForm(),
         ),
@@ -39,7 +37,3 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-

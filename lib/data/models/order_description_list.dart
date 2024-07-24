@@ -57,8 +57,8 @@ class OrderDescriptionList extends Equatable {
         id: id ?? this.id,
         paymentType: paymentType ?? this.paymentType,
         returnType: returnType ?? this.returnType,
-        returnedAmount: returnedAmount ?? this.returnedAmount,
-        returnedItemsNum: returnedItemsNum ?? this.returnedItemsNum);
+        returnedAmount: returnedAmount ?? returnedAmount,
+        returnedItemsNum: returnedItemsNum ?? returnedItemsNum);
   }
 
   @override

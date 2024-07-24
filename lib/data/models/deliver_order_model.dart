@@ -77,35 +77,38 @@ class DeliverOrderModel extends Equatable {
           : DateTime.parse(data['deliveredAt'] as String),
       lineName: data['lineName'] as String?,
       orderStatus: parseOrderStatus(data['orderStatus'] as String),
-      orderDescriptionList: data['orderDescriptionList'] == null || (data['orderDescriptionList'] as List).isEmpty
+      orderDescriptionList: data['orderDescriptionList'] == null ||
+              (data['orderDescriptionList'] as List).isEmpty
           ? null
-          : OrderDescriptionList.fromMap((data['orderDescriptionList'] as List).first as Map<String, dynamic>),
+          : OrderDescriptionList.fromMap((data['orderDescriptionList'] as List)
+              .first as Map<String, dynamic>),
       returnOrderHistory: data['returnOrderHistory'] == null
           ? null
           : (data['returnOrderHistory'] as List<dynamic>)
-          .map((e) => ReturnOrderList.fromMap(e as Map<String, dynamic>))
-          .toList(),
+              .map((e) => ReturnOrderList.fromMap(e as Map<String, dynamic>))
+              .toList(),
     );
   }
 
   Map<String, dynamic> toMap() => {
-    'orderId': orderId,
-    'clientId': clientId,
-    'clientName': clientName,
-    'clientCode': clientCode,
-    'driverId': driverId,
-    'driverName': driverName,
-    'billNumber': billNumber,
-    'billTotalPrice': billTotalPrice,
-    'numberOfItems': numberOfItems,
-    'createdAt': createdAt?.toIso8601String(),
-    'deliveryStartAt': deliveryStartAt?.toIso8601String(),
-    'deliveredAt': deliveredAt?.toIso8601String(),
-    'lineName': lineName,
-    'orderStatus': orderStatus.toString().split('.').last,
-    'orderDescriptionList': orderDescriptionList?.toMap(),
-    'returnOrderHistory': returnOrderHistory?.map((e) => e.toMap()).toList(),
-  };
+        'orderId': orderId,
+        'clientId': clientId,
+        'clientName': clientName,
+        'clientCode': clientCode,
+        'driverId': driverId,
+        'driverName': driverName,
+        'billNumber': billNumber,
+        'billTotalPrice': billTotalPrice,
+        'numberOfItems': numberOfItems,
+        'createdAt': createdAt?.toIso8601String(),
+        'deliveryStartAt': deliveryStartAt?.toIso8601String(),
+        'deliveredAt': deliveredAt?.toIso8601String(),
+        'lineName': lineName,
+        'orderStatus': orderStatus.toString().split('.').last,
+        'orderDescriptionList': orderDescriptionList?.toMap(),
+        'returnOrderHistory':
+            returnOrderHistory?.map((e) => e.toMap()).toList(),
+      };
 
   factory DeliverOrderModel.fromJson(String data) {
     return DeliverOrderModel.fromMap(json.decode(data) as Map<String, dynamic>);

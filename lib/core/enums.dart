@@ -36,7 +36,7 @@ extension PaymentTypeExtension on PaymentType {
 enum ReturnType { fullReturn, partialReturn, noReturn }
 
 extension ReturnTypeExtension on ReturnType {
-   static ReturnType? fromString(String value) {
+  static ReturnType? fromString(String value) {
     switch (value) {
       case 'FULL_REFUND':
         return ReturnType.fullReturn;
@@ -57,8 +57,8 @@ extension ReturnTypeExtension on ReturnType {
         return 'مرتجع جزئي';
       case ReturnType.noReturn:
         return 'بدون مرتجع';
-      default :
-      return null;
+      default:
+        return null;
     }
   }
 

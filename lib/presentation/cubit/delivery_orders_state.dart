@@ -67,5 +67,3 @@ class SearchRefreshState extends DeliveryOrdersState {
 class SentReturnRequest extends DeliveryOrdersState {
   const SentReturnRequest({required super.message});
 }
-
-
