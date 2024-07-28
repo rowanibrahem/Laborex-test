@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/data/models/deliver_order_model.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
 import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
+import 'package:laborex_distribution_app/presentation/widgets/confirmation_dialog.dart';
 
 class ReturnBottomSheet extends StatefulWidget {
   const ReturnBottomSheet({super.key, required this.item});
@@ -103,27 +104,64 @@ class _ReturnBottomSheetState extends State<ReturnBottomSheet> {
             alignment: Alignment.center,
             child: ElevatedButton(
               onPressed: () {
-                print(widget.item.billTotalPrice);
-                BlocProvider.of<DeliveryOrdersCubit>(context).createReturn(
-                  token: BlocProvider.of<AuthenticationCubit>(context)
-                      .state
-                      .token!,
-                  tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
-                      .state
-                      .tenantUUID!,
-                  id: widget.item.orderId.toString(),
-                  paymentType: widget.item.orderDescriptionList!.paymentType!,
-                  returnType: selectedReturn.name,
-                    returnedAmount:selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice!:double.parse(returnedAmountController.text.isNotEmpty?returnedAmountController.text:'0'),
-                  returnedItemsNum:selectedReturn==ReturnType.fullReturn?widget.item.numberOfItems!:int.parse(returnedAmountController.text.isNotEmpty?returnedAmountController.text:'0'),
-                  // returnedAmount: returnedAmountController.text.isNotEmpty
-                  //     ? selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice!:double.parse(returnedAmountController.text)
-                  //     : 0,
-                  // returnedItemsNum: returnedItemsNumController.text.isNotEmpty
-                  //     ? selectedReturn==ReturnType.fullReturn? widget.item.numberOfItems!:int.parse(returnedItemsNumController.text)
-                  //     : 0,
-                );
-                Navigator.pop(context);
+                showDialog(context: context, builder: (context) =>
+                    ConfirmationDialog(
+                      text:'تأكيد الطلب',
+                      content:  Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text.rich(
+                              TextSpan(
+                                  text: 'نوع المرتجع: ',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: selectedReturn.arabicName,
+                                      style: const TextStyle(fontSize:16,fontWeight: FontWeight.bold),
+                                    )
+                                  ]
+                              )),
+                          Text.rich(
+                              TextSpan(
+                                  text: 'مبلغ المرتجع: ',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: selectedReturn == ReturnType.fullReturn
+                                          ? widget.item.billTotalPrice.toString()
+                                          : returnedAmountController.text.isEmpty?'0':returnedAmountController.text,
+                                      style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                                    )
+                                  ]
+                              )),
+                          Text.rich(
+                              TextSpan(
+                                  text: 'عدد أصناف المرتجع: ',
+                                  children: <InlineSpan>[
+                                    TextSpan(
+                                      text: selectedReturn == ReturnType.fullReturn
+                                          ? widget.item.numberOfItems.toString()
+                                          : returnedItemsNumController.text.isEmpty?'0':returnedItemsNumController.text,
+                                      style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                                    )
+                                  ]
+                              )),
+                        ],
+                      ),
+                      confirmationFunction: () {
+                        BlocProvider.of<DeliveryOrdersCubit>(context).createReturn(
+                          token: BlocProvider.of<AuthenticationCubit>(context)
+                              .state
+                              .token!,
+                          tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                              .state
+                              .tenantUUID!,
+                          id: widget.item.orderId.toString(),
+                          paymentType: widget.item.orderDescriptionList!.paymentType!,
+                          returnType: selectedReturn.name,
+                          returnedAmount:selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice!:double.parse(returnedAmountController.text.isNotEmpty?returnedAmountController.text:'0'),
+                          returnedItemsNum:selectedReturn==ReturnType.fullReturn?widget.item.numberOfItems!:int.parse(returnedAmountController.text.isNotEmpty?returnedAmountController.text:'0'),
+                        );
+                        Navigator.pop(context);
+                      },));
               },
               child: const Text('تأكيد'),
             ),

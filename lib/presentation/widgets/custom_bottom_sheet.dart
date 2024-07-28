@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/data/models/deliver_order_model.dart';
+import 'package:laborex_distribution_app/presentation/widgets/confirmation_dialog.dart';
 
 import '../../core/enums.dart';
 
@@ -12,11 +13,11 @@ class CustomBottomSheet extends StatefulWidget {
   });
 
   final Function(
-    String paymentType,
-    String returnType,
-    String returnedAmount,
-    String returnedItemsNum,
-  ) onConfirm;
+      String paymentType,
+      String returnType,
+      String returnedAmount,
+      String returnedItemsNum,
+      ) onConfirm;
 
   final DeliverOrderModel item;
 
@@ -39,10 +40,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             "اختر طريقة الدفع",
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+            ),
           ),
           ListTile(
             title: const Text('فاتورة نقدا'),
@@ -68,10 +73,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           ),
           Text(
             "حدد نوع المرتجع",
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+            ),
           ),
           ListTile(
             title: const Text('مرتجع كلي'),
@@ -108,10 +117,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           ),
           Text(
             "أدخل قيمة المرتجع",
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -129,10 +142,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
           ),
           Text(
             "أدخل عدد أصناف المرتجع",
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -152,12 +169,71 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             alignment: Alignment.center,
             child: ElevatedButton(
               onPressed: () {
-                widget.onConfirm(
-                    selectedPayment.name,
-                    selectedReturn.name,
-                    selectedReturn==ReturnType.fullReturn?widget.item.billTotalPrice.toString():returnedAmountController.text,
-                    selectedReturn==ReturnType.fullReturn?widget.item.numberOfItems.toString():returnedItemsNumController.text);
-                Navigator.pop(context);
+                showDialog(context: context, builder: (context) =>
+                    ConfirmationDialog(
+                      text:'تأكيد الطلب',
+                      content:  Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                      Text.rich(
+                      TextSpan(
+                      text: 'نوع الفاتورة: ',
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: selectedPayment.arabicName,
+                              style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                            )
+                          ]
+                      )),
+                      Text.rich(
+                      TextSpan(
+                      text: 'نوع المرتجع: ',
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: selectedReturn.arabicName,
+                              style: const TextStyle(fontSize:16,fontWeight: FontWeight.bold),
+                            )
+                          ]
+                      )),
+                      Text.rich(
+                      TextSpan(
+                      text: 'مبلغ المرتجع: ',
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: selectedReturn == ReturnType.fullReturn
+                      ? widget.item.billTotalPrice.toString()
+                              : returnedAmountController.text.isEmpty?'0':returnedAmountController.text,
+                              style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                            )
+                          ]
+                      )),
+                      Text.rich(
+                      TextSpan(
+                      text: 'عدد أصناف المرتجع: ',
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: selectedReturn == ReturnType.fullReturn
+                      ? widget.item.numberOfItems.toString()
+                              : returnedItemsNumController.text.isEmpty?'0':returnedItemsNumController.text,
+                              style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                            )
+                          ]
+                      )),
+                        ],
+                      ),
+                      confirmationFunction: () {
+                      widget.onConfirm(
+                          selectedPayment.name,
+                          selectedReturn.name,
+                          selectedReturn == ReturnType.fullReturn
+                              ? widget.item.billTotalPrice.toString()
+                              : returnedAmountController.text,
+                          selectedReturn == ReturnType.fullReturn
+                              ? widget.item.numberOfItems.toString()
+                              : returnedItemsNumController.text);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },));
               },
               child: const Text('تأكيد'),
             ),
