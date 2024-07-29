@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> setDependencies(BuildContext ctx) async {
     _prefs = await SecureSharedPref.getInstance();
     // _localRepo = LocalRepo(secureSharedPreferences: _prefs);
-    dio = Dio();
+    dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 15)));
     remoteRepo = RemoteRepo(
       dio,
     );
