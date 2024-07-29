@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
@@ -26,36 +28,31 @@ class PendingListView extends StatelessWidget {
                 context: context,
                 isScrollControlled: true,
                 builder: (context) {
-                  return Wrap(
-                    children: [
-                      CustomBottomSheet(
-                        onConfirm: (
-                          String paymentType,
-                          String returnType,
-                          String returnedAmount,
-                          String returnedItemsNum,
-                        ) {
-                          deliveryOrdersCubit.deliveredAction(
-                            token: BlocProvider.of<AuthenticationCubit>(context)
-                                .state
-                                .token!,
-                            tenantUUID:
-                                BlocProvider.of<AuthenticationCubit>(context)
-                                    .state
-                                    .tenantUUID!,
-                            id: itemId,
-                            paymentType: paymentType,
-                            returnType: returnType,
-                            returnedAmount: returnedAmount.isNotEmpty
-                                ? double.parse(returnedAmount)
-                                : 0,
-                            returnedItemsNum: returnedItemsNum.isNotEmpty
-                                ? int.parse(returnedItemsNum)
-                                : 0,
-                          );
-                        }, item: pendingList[index],
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: CustomBottomSheet(
+                      onConfirm: (
+                        String paymentType,
+                        String returnType,
+                        String returnedAmount,
+                        String returnedItemsNum,
                       )
-                    ],
+                                        {
+                        deliveryOrdersCubit.deliveredAction(
+                          token: BlocProvider.of<AuthenticationCubit>(context)
+                              .state
+                              .token!,
+                          tenantUUID:
+                              BlocProvider.of<AuthenticationCubit>(context)
+                                  .state
+                                  .tenantUUID!,
+                          id: itemId,
+                          paymentType: paymentType,
+                          returnType: returnType, returnedAmount: returnedAmount.isNotEmpty?double.parse(returnedAmount):0, returnedItemsNum: returnedItemsNum.isNotEmpty?int.parse(returnedItemsNum):0,
+
+                        );
+                      }, item: pendingList[index],
+                    ),
                   );
                 },
               );
