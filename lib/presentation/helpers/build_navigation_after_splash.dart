@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:laborex_distribution_app/presentation/screens/home_screen.dart';
 import 'package:laborex_distribution_app/presentation/screens/login_screen.dart';
+import 'package:upgrader/upgrader.dart';
 
 void buildNavigationAfterSplash(
   AsyncSnapshot<bool> snapshot,
@@ -19,7 +20,17 @@ void buildNavigationAfterSplash(
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
+          builder: (context) => UpgradeAlert(
+            showIgnore: false,
+            showLater: false,
+            upgrader: Upgrader(
+                debugLogging: true,
+                debugDisplayAlways: true,
+                languageCode: "ar",
+                messages: UpgraderMessages(code: 'ar'),
+                countryCode: "EG"),
+            child: const LoginScreen(),
+          ),
         ),
       );
     }
@@ -28,7 +39,17 @@ void buildNavigationAfterSplash(
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => UpgradeAlert(
+            upgrader: Upgrader(
+                debugLogging: true,
+                debugDisplayAlways: true,
+                languageCode: "ar",
+                messages: UpgraderMessages(code: 'ar'),
+                countryCode: "EG"),
+            showIgnore: false,
+            showLater: false,
+            child: const HomeScreen(),
+          ),
         ),
       );
     }
