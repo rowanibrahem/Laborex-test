@@ -24,8 +24,6 @@ void buildNavigationAfterSplash(
             showIgnore: false,
             showLater: false,
             upgrader: Upgrader(
-                debugLogging: true,
-                debugDisplayAlways: true,
                 languageCode: "ar",
                 messages: UpgraderMessages(code: 'ar'),
                 countryCode: "EG"),
@@ -41,8 +39,6 @@ void buildNavigationAfterSplash(
         MaterialPageRoute(
           builder: (context) => UpgradeAlert(
             upgrader: Upgrader(
-                debugLogging: true,
-                debugDisplayAlways: true,
                 languageCode: "ar",
                 messages: UpgraderMessages(code: 'ar'),
                 countryCode: "EG"),
