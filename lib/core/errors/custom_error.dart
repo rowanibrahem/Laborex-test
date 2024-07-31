@@ -26,9 +26,6 @@ class ServerError extends CustomError {
 
       case DioExceptionType.cancel:
         return ServerError('تم إلغاء الاتصال بالخادم');
-      case DioExceptionType.badResponse:
-        return ServerError(dioError.response?.data ?? "يرجى المحاولة مجددا");
-
       case DioExceptionType.unknown:
         if (dioError.message!.contains('SocketException')) {
           return ServerError('لا يوجد اتصال بالإنترنت');

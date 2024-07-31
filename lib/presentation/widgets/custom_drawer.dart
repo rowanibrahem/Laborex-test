@@ -34,7 +34,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () => showDialog(
                 context: context,
                 builder: (context) => ConfirmationDialog(
-                    text: 'هل أنت متأكد من تسجيل الخروج',
+                    text: 'هل أنت متأكد من انك تريد تسجيل الخروج',
                     confirmationFunction: () =>
                         BlocProvider.of<AuthenticationCubit>(context)
                             .logOut())),

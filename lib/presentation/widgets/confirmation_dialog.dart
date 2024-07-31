@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   const ConfirmationDialog(
-      {super.key,required this.text, required this.confirmationFunction,this.content=const SizedBox()});
+      {super.key,
+      required this.text,
+      required this.confirmationFunction,
+      this.content = const SizedBox()});
 
   final String text;
   final void Function() confirmationFunction;
@@ -14,10 +17,20 @@ class ConfirmationDialog extends StatelessWidget {
       title: Text(text),
       content: content,
       actions: [
-        ElevatedButton(
-            onPressed:confirmationFunction, child: const Text("تأكيد")),
-        ElevatedButton(
-            onPressed: () => Navigator.pop(context), child: const Text("الغاء"))
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center, 
+          children: [
+            ElevatedButton(
+              onPressed: confirmationFunction,
+              child: const Text("تأكيد"),
+            ),
+            const SizedBox(width: 16), 
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("الغاء"),
+            ),
+          ],
+        ),
       ],
     );
   }

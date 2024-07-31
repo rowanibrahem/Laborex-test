@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/data/data%20source/cacheNetwork.dart';
-
 import 'presentation/cubit/authentication_cubit.dart';
 import 'presentation/cubit/delivery_orders_cubit.dart';
 import 'presentation/screens/splash_screen.dart';
@@ -60,8 +59,6 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          // home: const LoginScreen(),
-          // home: const HomeScreen(),
           home: const SplashScreen(),
         ),
       ),

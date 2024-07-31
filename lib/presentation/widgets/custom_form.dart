@@ -10,10 +10,10 @@ class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  LoginFormState createState() => LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class LoginFormState extends State<LoginForm> {
   bool _showPassword = false;
   bool _isLoading = false;
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -29,11 +29,11 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-        'تسجيل الدخول',
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 24.sp,
-            ),
+            'تسجيل الدخول',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24.sp,
+                ),
           ),
           SizedBox(height: 30.h),
           PhoneNumberField(controller: _phoneNumberController),

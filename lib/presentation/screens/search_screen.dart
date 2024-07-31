@@ -64,6 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
               // labelText: 'ادخل عدد الأصناف',
               // enabled: (selectedReturn != ReturnType.noReturn),
               hintText: "ابحث برقم الفاتورة",
+              contentPadding: EdgeInsets.symmetric(vertical: 14.h),
               border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8))),
             ),

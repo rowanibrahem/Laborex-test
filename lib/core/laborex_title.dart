@@ -26,12 +26,12 @@ class LaborexTitle extends StatelessWidget {
                   ),
             ),
             Text(
-              'Pharma',
+              'Driver',
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 12.sp,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                    fontSize: 15.sp,
+                  color: const Color(0xFFDEB887),
+),
             ),
           ],
         ),

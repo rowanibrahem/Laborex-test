@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:laborex_distribution_app/core/enums.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
 import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
 import 'package:laborex_distribution_app/presentation/widgets/bottom_section.dart';
@@ -24,7 +23,6 @@ class SearchOrderCard extends StatefulWidget {
 }
 
 class _SearchOrderCardState extends State<SearchOrderCard> {
-
   @override
   Widget build(BuildContext context) {
     var customDivider = SizedBox(
@@ -95,8 +93,8 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
             ),
             widget.deliveryOrder.orderStatus == OrderStatus.delivered
                 ? Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 32),
                     child: Column(
                       children: [
                         MaterialButton(
@@ -151,31 +149,31 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: CustomBottomSheet(
-            onConfirm: (
-              String paymentType,
-              String returnType,
-              String returnedAmount,
-              String returnedItemsNum,
-            ) {
-              BlocProvider.of<DeliveryOrdersCubit>(context).deliveredAction(
-                token: BlocProvider.of<AuthenticationCubit>(context)
-                    .state
-                    .token!,
-                tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
-                    .state
-                    .tenantUUID!,
-                id: itemId,
-                paymentType: paymentType,
-                returnType: returnType,
-                returnedAmount: returnedAmount.isNotEmpty
-                    ? double.parse(returnedAmount)
-                    : 0,
-                returnedItemsNum: returnedItemsNum.isNotEmpty
-                    ? int.parse(returnedItemsNum)
-                    : 0,
-              );
-            }, item: widget.deliveryOrder
-          ),
+              onConfirm: (
+                String paymentType,
+                String returnType,
+                String returnedAmount,
+                String returnedItemsNum,
+              ) {
+                BlocProvider.of<DeliveryOrdersCubit>(context).deliveredAction(
+                  token: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .token!,
+                  tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                      .state
+                      .tenantUUID!,
+                  id: itemId,
+                  paymentType: paymentType,
+                  returnType: returnType,
+                  returnedAmount: returnedAmount.isNotEmpty
+                      ? double.parse(returnedAmount)
+                      : 0,
+                  returnedItemsNum: returnedItemsNum.isNotEmpty
+                      ? int.parse(returnedItemsNum)
+                      : 0,
+                );
+              },
+              item: widget.deliveryOrder),
         );
       },
     );
@@ -197,9 +195,9 @@ class _SearchOrderCardState extends State<SearchOrderCard> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context){
+      builder: (context) {
         return Padding(
-            padding: MediaQuery.of(context).viewInsets,
+          padding: MediaQuery.of(context).viewInsets,
           child: ReturnBottomSheet(item: item),
         );
       },
