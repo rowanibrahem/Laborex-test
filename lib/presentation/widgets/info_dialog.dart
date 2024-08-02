@@ -127,11 +127,8 @@ class _InfoDialogState extends State<InfoDialog> {
                         subtitle: SizedBox(
                           width: 100.w,
                           child: Text(
-                            ReturnTypeExtension.fromString(widget
-                                        .deliveryOrder
-                                        .orderDescriptionList!
-
-                                        .returnType!)
+                            ReturnTypeExtension.fromString(widget.deliveryOrder
+                                        .orderDescriptionList!.returnType!)
                                     ?.arabicName ??
                                 "غير معروف",
                             style: Theme.of(context)
@@ -160,33 +157,63 @@ class _InfoDialogState extends State<InfoDialog> {
                 ),
               ),
               const SizedBox(height: 4),
-               (ReturnTypeExtension.fromString(widget.deliveryOrder.orderDescriptionList?.returnType??"PARTIAL_REFUND") != ReturnType.noReturn  )?
-             Column(
-
-             children : [
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    "تفاصل المرتجع",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xbb696969),
-                          fontSize: 14.sp,
+              (ReturnTypeExtension.fromString(widget
+                              .deliveryOrder.orderDescriptionList?.returnType ??
+                          "PARTIAL_REFUND") !=
+                      ReturnType.noReturn)
+                  ? Column(children: [
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          "قيمة المرتجع",
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xbb696969),
+                                    fontSize: 14.sp,
+                                  ),
                         ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                      (widget.deliveryOrder.orderDescriptionList?.description) ??
-                          "لا يوجد تفاصيل",
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontSize: 14.sp,
-                          )),
-                ),
-              ]):
-              const SizedBox(),
+                      ),
+                      const SizedBox(height: 4),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                            (widget.deliveryOrder.orderDescriptionList
+                                    ?.returnedAmount
+                                    .toString()) ??
+                                "لا يوجد تفاصيل",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontSize: 14.sp,
+                                    )),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          "عدد أصناف المرتجع",
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xbb696969),
+                                    fontSize: 14.sp,
+                                  ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                            (widget.deliveryOrder.orderDescriptionList
+                                    ?.returnedItemsNum
+                                    .toString()) ??
+                                "لا يوجد تفاصيل",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontSize: 14.sp,
+                                    )),
+                      ),
+                    ])
+                  : const SizedBox(),
             ],
           ),
         ),

@@ -21,31 +21,41 @@ class PendingListView extends StatelessWidget {
         ? const RefreshableOrdersListView.empty()
         : RefreshableOrdersListView(
             orderList: pendingList,
-            onTapAction: (itemId, _) {
+            onTapAction: (itemId, index) {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 builder: (context) {
-                  return Wrap(
-                    children: [
-                      CustomBottomSheet(
-                        onConfirm: (
-                          String paymentType,
-                          String returnType,
-                          String description,
-                        ) {
-                          deliveryOrdersCubit.deliveredAction(
-                            token: BlocProvider.of<AuthenticationCubit>(context)
-                                .state
-                                .token!,
-                            id: itemId,
-                            paymentType: paymentType,
-                            returnType: returnType,
-                            description: description,
-                          );
-                        },
-                      )
-                    ],
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: CustomBottomSheet(
+                      onConfirm: (
+                        String paymentType,
+                        String returnType,
+                        String returnedAmount,
+                        String returnedItemsNum,
+                      ) {
+                        deliveryOrdersCubit.deliveredAction(
+                          token: BlocProvider.of<AuthenticationCubit>(context)
+                              .state
+                              .token!,
+                          tenantUUID:
+                              BlocProvider.of<AuthenticationCubit>(context)
+                                  .state
+                                  .tenantUUID!,
+                          id: itemId,
+                          paymentType: paymentType,
+                          returnType: returnType,
+                          returnedAmount: returnedAmount.isNotEmpty
+                              ? double.parse(returnedAmount)
+                              : 0,
+                          returnedItemsNum: returnedItemsNum.isNotEmpty
+                              ? int.parse(returnedItemsNum)
+                              : 0,
+                        );
+                      },
+                      item: pendingList[index],
+                    ),
                   );
                 },
               );

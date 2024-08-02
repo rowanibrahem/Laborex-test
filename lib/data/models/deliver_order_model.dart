@@ -1,21 +1,21 @@
 import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
-
+import 'package:laborex_distribution_app/data/models/return_order_list.dart';
 import 'order_description_list.dart';
 
-enum OrderStatus { inStock, inProgress, delivered }
+enum OrderStatus { inStock, inProgress, delivered, cancelled }
 
 OrderStatus parseOrderStatus(String status) {
-  if (status == 'ORDER_CREATED') {
-    return OrderStatus.inStock;
-  } else if (status == 'IN_PROGRESS') {
-    return OrderStatus.inProgress;
-  } else if (status == 'DELIVERED') {
-    return OrderStatus.delivered;
+  switch (status) {
+    case 'ORDER_CREATED':
+      return OrderStatus.inStock;
+    case 'IN_PROGRESS':
+      return OrderStatus.inProgress;
+    case 'DELIVERED':
+      return OrderStatus.delivered;
+    default:
+      return OrderStatus.cancelled;
   }
-
-  throw Exception('Unknown status: $status');
 }
 
 class DeliverOrderModel extends Equatable {
@@ -34,6 +34,7 @@ class DeliverOrderModel extends Equatable {
   final String? lineName;
   final OrderStatus orderStatus;
   final OrderDescriptionList? orderDescriptionList;
+  final List<ReturnOrderList>? returnOrderHistory;
 
   const DeliverOrderModel({
     this.orderId,
@@ -51,6 +52,7 @@ class DeliverOrderModel extends Equatable {
     this.lineName,
     required this.orderStatus,
     this.orderDescriptionList,
+    this.returnOrderHistory,
   });
 
   factory DeliverOrderModel.fromMap(Map<String, dynamic> data) {
@@ -75,12 +77,16 @@ class DeliverOrderModel extends Equatable {
           : DateTime.parse(data['deliveredAt'] as String),
       lineName: data['lineName'] as String?,
       orderStatus: parseOrderStatus(data['orderStatus'] as String),
-      orderDescriptionList: (data['orderDescriptionList'] as List<dynamic>).isEmpty ? null : OrderDescriptionList.fromMap(
-                  data['orderDescriptionList'][0]),
-
-      // (data['orderDescriptionList'] as dynamic)
-      //     ?.map((e) => OrderDescriptionList.fromMap(e as Map<String, dynamic>))
-      //     ,
+      orderDescriptionList: data['orderDescriptionList'] == null ||
+              (data['orderDescriptionList'] as List).isEmpty
+          ? null
+          : OrderDescriptionList.fromMap((data['orderDescriptionList'] as List)
+              .first as Map<String, dynamic>),
+      returnOrderHistory: data['returnOrderHistory'] == null
+          ? null
+          : (data['returnOrderHistory'] as List<dynamic>)
+              .map((e) => ReturnOrderList.fromMap(e as Map<String, dynamic>))
+              .toList(),
     );
   }
 
@@ -98,17 +104,16 @@ class DeliverOrderModel extends Equatable {
         'deliveryStartAt': deliveryStartAt?.toIso8601String(),
         'deliveredAt': deliveredAt?.toIso8601String(),
         'lineName': lineName,
-        'orderStatus': orderStatus,
-        'orderDescriptionList':
-            orderDescriptionList,
+        'orderStatus': orderStatus.toString().split('.').last,
+        'orderDescriptionList': orderDescriptionList?.toMap(),
+        'returnOrderHistory':
+            returnOrderHistory?.map((e) => e.toMap()).toList(),
       };
 
-  /// Parses the string and returns the resulting Json object as [DeliverOrderModel].
   factory DeliverOrderModel.fromJson(String data) {
     return DeliverOrderModel.fromMap(json.decode(data) as Map<String, dynamic>);
   }
 
-  /// Converts [DeliverOrderModel] to a JSON string.
   String toJson() => json.encode(toMap());
 
   DeliverOrderModel copyWith({
@@ -126,7 +131,8 @@ class DeliverOrderModel extends Equatable {
     DateTime? deliveredAt,
     String? lineName,
     OrderStatus? orderStatus,
-  OrderDescriptionList? orderDescriptionList,
+    OrderDescriptionList? orderDescriptionList,
+    List<ReturnOrderList>? returnOrderHistory,
   }) {
     return DeliverOrderModel(
       orderId: orderId ?? this.orderId,
@@ -144,6 +150,7 @@ class DeliverOrderModel extends Equatable {
       lineName: lineName ?? this.lineName,
       orderStatus: orderStatus ?? this.orderStatus,
       orderDescriptionList: orderDescriptionList ?? this.orderDescriptionList,
+      returnOrderHistory: returnOrderHistory ?? this.returnOrderHistory,
     );
   }
 
@@ -165,6 +172,7 @@ class DeliverOrderModel extends Equatable {
       lineName,
       orderStatus,
       orderDescriptionList,
+      returnOrderHistory,
     ];
   }
 }

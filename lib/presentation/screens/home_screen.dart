@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late RemoteRepo remoteRepo;
 
   late TabController _topTabController;
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
   initState() {
@@ -27,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _topTabController = TabController(length: 3, initialIndex: 0, vsync: this);
     if (context.mounted) {
       BlocProvider.of<DeliveryOrdersCubit>(context).fetchOrders(
-        token: accessToken,
-        // token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+        // token: accessToken,
+        token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
+        tenantUUID:
+            BlocProvider.of<AuthenticationCubit>(context).state.tenantUUID!,
       );
     }
   }
@@ -53,9 +56,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
+        key: _key,
         appBar: LaborexAppBar(
           context: context,
           topTabController: _topTabController,
+          scaffoldKey: _key,
         ),
         drawer: CustomDrawer(
           context: context,

@@ -23,8 +23,8 @@ class PasswordField extends StatelessWidget {
           onTap: toggleShowPassword,
           child: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
         ),
-        labelText: 'ادخل كلمة السر',
-        hintText: "كلمة السر",
+        hintText: 'ادخل كلمة السر',
+        labelText: "كلمة السر",
         constraints: BoxConstraints(
           maxWidth: 360.w,
         ),

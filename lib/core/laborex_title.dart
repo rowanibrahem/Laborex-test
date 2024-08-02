@@ -17,22 +17,22 @@ class LaborexTitle extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           Text(
-            'Laborex',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 32.sp,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-          ),
-          Text(
-            'Pharma',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12.sp,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-          ),
+            Text(
+              'Laborex',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32.sp,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+            Text(
+              'Driver',
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.sp,
+                  color: const Color(0xFFDEB887),
+),
+            ),
           ],
         ),
       ),

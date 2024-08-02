@@ -7,15 +7,15 @@ import 'package:laborex_distribution_app/presentation/widgets/delivery_order_car
 
 class TabViewsBuilder extends StatelessWidget {
   final TabController topTabController;
-final  Future<void> refreshdata;
+  final Future<void> refreshdata;
   final Function showsnackbar;
-  const TabViewsBuilder({super.key,
-  required this.topTabController,
-   required this.refreshdata,
-    required this.showsnackbar});
+  const TabViewsBuilder(
+      {super.key,
+      required this.topTabController,
+      required this.refreshdata,
+      required this.showsnackbar});
 
   @override
-
   Widget build(BuildContext context) {
     return BlocBuilder<DeliveryOrdersCubit, DeliveryOrdersState>(
       builder: (context, state) {
@@ -171,15 +171,16 @@ class RefreshableListView extends StatelessWidget {
         itemBuilder: (_, int index) {
           return DeliveryOrderCard(
             deliveryOrder: orderList[index],
-            onTapAction: (itemId) =>
-            deliveryOrdersCubit.inStockAction(
-              token: BlocProvider.of<AuthenticationCubit>(context).state.token!,
-              id: itemId,
-            ),
+            onTapAction: (itemId) => deliveryOrdersCubit.inStockAction(
+                token:
+                    BlocProvider.of<AuthenticationCubit>(context).state.token!,
+                id: itemId,
+                tenantUUID: BlocProvider.of<AuthenticationCubit>(context)
+                    .state
+                    .tenantUUID!),
           );
         },
       ),
     );
   }
 }
-

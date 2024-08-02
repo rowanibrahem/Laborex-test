@@ -1,14 +1,10 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
 import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
 import 'package:laborex_distribution_app/presentation/helpers/build_navigation_after_splash.dart';
-
-import 'package:secure_shared_preferences/secure_shared_preferences.dart';
-
 import '../../data/data source/remote_repo.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen>
   var animationDuration = 3000;
 
   //*
-  late SecureSharedPref _prefs;
   late RemoteRepo remoteRepo;
 
   // late LocalRepo _localRepo;
@@ -99,9 +94,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> setDependencies(BuildContext ctx) async {
-    _prefs = await SecureSharedPref.getInstance();
     // _localRepo = LocalRepo(secureSharedPreferences: _prefs);
-    dio = Dio();
+    dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 15)));
     remoteRepo = RemoteRepo(
       dio,
     );
@@ -163,7 +157,7 @@ class _SplashScreenState extends State<SplashScreen>
                 child: FadeTransition(
                   opacity: _logoOpacityAnimation,
                   child: Image.asset(
-                    'assets/logo.png',
+                    'assets/splashPhoto.png',
                   ), // Replace with your logo image path
                 ),
               ),

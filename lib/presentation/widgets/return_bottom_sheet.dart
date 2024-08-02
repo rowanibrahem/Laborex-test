@@ -1,72 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:laborex_distribution_app/core/enums.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laborex_distribution_app/data/models/deliver_order_model.dart';
+import 'package:laborex_distribution_app/presentation/cubit/authentication_cubit.dart';
+import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
 import 'package:laborex_distribution_app/presentation/widgets/confirmation_dialog.dart';
 
-import '../../core/enums.dart';
-
-class CustomBottomSheet extends StatefulWidget {
-  const CustomBottomSheet({
-    super.key,
-    required this.onConfirm,
-    required this.item,
-  });
-
-  final Function(
-    String paymentType,
-    String returnType,
-    String returnedAmount,
-    String returnedItemsNum,
-  ) onConfirm;
+class ReturnBottomSheet extends StatefulWidget {
+  const ReturnBottomSheet({super.key, required this.item});
 
   final DeliverOrderModel item;
 
   @override
-  State<CustomBottomSheet> createState() => _CustomBottomSheetState();
+  State<ReturnBottomSheet> createState() => _ReturnBottomSheetState();
 }
 
-class _CustomBottomSheetState extends State<CustomBottomSheet> {
-  PaymentType selectedPayment = PaymentType.cash;
-  ReturnType selectedReturn = ReturnType.noReturn;
+class _ReturnBottomSheetState extends State<ReturnBottomSheet> {
+  ReturnType selectedReturn = ReturnType.partialReturn;
   final returnedAmountController = TextEditingController();
   final returnedItemsNumController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 647.h,
       padding: EdgeInsets.all(24.w),
-      child: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            "اختر طريقة الدفع",
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
-          ),
-          ListTile(
-            title: const Text('فاتورة نقدا'),
-            leading: Radio<PaymentType>(
-                value: PaymentType.cash,
-                groupValue: selectedPayment,
-                onChanged: (PaymentType? value) {
-                  setState(() {
-                    selectedPayment = value!;
-                  });
-                }),
-          ),
-          ListTile(
-            title: const Text('فاتورة بالختم'),
-            leading: Radio<PaymentType>(
-                value: PaymentType.payLater,
-                groupValue: selectedPayment,
-                onChanged: (PaymentType? value) {
-                  setState(() {
-                    selectedPayment = value!;
-                  });
-                }),
-          ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
           Text(
             "حدد نوع المرتجع",
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -89,17 +51,6 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             title: const Text('مرتجع جزئي'),
             leading: Radio<ReturnType>(
                 value: ReturnType.partialReturn,
-                groupValue: selectedReturn,
-                onChanged: (ReturnType? value) {
-                  setState(() {
-                    selectedReturn = value!;
-                  });
-                }),
-          ),
-          ListTile(
-            title: const Text('لا يوجد مرتجع'),
-            leading: Radio<ReturnType>(
-                value: ReturnType.noReturn,
                 groupValue: selectedReturn,
                 onChanged: (ReturnType? value) {
                   setState(() {
@@ -161,16 +112,6 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text.rich(TextSpan(
-                                  text: 'نوع الفاتورة: ',
-                                  children: <InlineSpan>[
-                                    TextSpan(
-                                      text: selectedPayment.arabicName,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ])),
-                              Text.rich(TextSpan(
                                   text: 'نوع المرتجع: ',
                                   children: <InlineSpan>[
                                     TextSpan(
@@ -216,24 +157,43 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                             ],
                           ),
                           confirmationFunction: () {
-                            widget.onConfirm(
-                                selectedPayment.name,
-                                selectedReturn.name,
-                                selectedReturn == ReturnType.fullReturn
-                                    ? widget.item.billTotalPrice.toString()
-                                    : returnedAmountController.text,
-                                selectedReturn == ReturnType.fullReturn
-                                    ? widget.item.numberOfItems.toString()
-                                    : returnedItemsNumController.text);
-                            Navigator.pop(context);
+                            BlocProvider.of<DeliveryOrdersCubit>(context)
+                                .createReturn(
+                              token:
+                                  BlocProvider.of<AuthenticationCubit>(context)
+                                      .state
+                                      .token!,
+                              tenantUUID:
+                                  BlocProvider.of<AuthenticationCubit>(context)
+                                      .state
+                                      .tenantUUID!,
+                              id: widget.item.orderId.toString(),
+                              paymentType: widget
+                                  .item.orderDescriptionList!.paymentType!,
+                              returnType: selectedReturn.name,
+                              returnedAmount: selectedReturn ==
+                                      ReturnType.fullReturn
+                                  ? widget.item.billTotalPrice!
+                                  : double.parse(
+                                      returnedAmountController.text.isNotEmpty
+                                          ? returnedAmountController.text
+                                          : '0'),
+                              returnedItemsNum: selectedReturn ==
+                                      ReturnType.fullReturn
+                                  ? widget.item.numberOfItems!
+                                  : int.parse(
+                                      returnedAmountController.text.isNotEmpty
+                                          ? returnedAmountController.text
+                                          : '0'),
+                            );
                             Navigator.pop(context);
                           },
                         ));
               },
               child: const Text('تأكيد'),
             ),
-          ),
-        ]),
+          )
+        ],
       ),
     );
   }

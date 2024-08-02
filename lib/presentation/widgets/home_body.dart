@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:laborex_distribution_app/presentation/cubit/delivery_orders_cubit.dart';
-import 'package:laborex_distribution_app/presentation/widgets/centered_loading.dart';
-import 'package:laborex_distribution_app/presentation/widgets/orders_lists/delivered_list.dart';
-import 'package:laborex_distribution_app/presentation/widgets/orders_lists/pending_list_view.dart';
-import 'package:laborex_distribution_app/presentation/widgets/orders_lists/stock_list_view.dart';
 import 'package:laborex_distribution_app/presentation/widgets/tab_views_content.dart';
 
 class HomeBody extends StatelessWidget {
@@ -18,7 +14,6 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<DeliveryOrdersCubit, DeliveryOrdersState>(
       listener: (context, state) {
-
         // This part is where error messages and backend responses are handled
 
         if (state is ErrorOccurredState) {
@@ -34,6 +29,13 @@ class HomeBody extends StatelessWidget {
               content: Text(state.message!),
             ),
           );
+        } else if (state is SentReturnRequest) {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    icon: Image.asset('assets/img.png'),
+                    title: Text(state.message!),
+                  ));
         }
       },
       builder: (context, state) {

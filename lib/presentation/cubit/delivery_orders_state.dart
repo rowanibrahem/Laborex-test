@@ -59,3 +59,11 @@ class ShowMessageState extends DeliveryOrdersState {
 class ErrorOccurredState extends DeliveryOrdersState {
   const ErrorOccurredState({required super.customError});
 }
+
+class SearchRefreshState extends DeliveryOrdersState {
+  const SearchRefreshState();
+}
+
+class SentReturnRequest extends DeliveryOrdersState {
+  const SentReturnRequest({required super.message});
+}

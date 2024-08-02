@@ -1,4 +1,4 @@
-package com.example.laborex_delivery_app
+package com.laborex.dist
 
 import io.flutter.embedding.android.FlutterActivity
 

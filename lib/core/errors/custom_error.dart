@@ -18,16 +18,14 @@ class ServerError extends CustomError {
         return ServerError('يوجد مشكلة في الاتصال بالانترنت');
 
       case DioExceptionType.badResponse:
-        if (dioError.response == null)
+        if (dioError.response == null) {
           return ServerError('حدث خطأ، يرجى المحاولة مرة أخرى');
-        else
-        return ServerError.fromResponse(dioError.response!);
+        } else {
+          return ServerError.fromResponse(dioError.response!);
+        }
 
       case DioExceptionType.cancel:
         return ServerError('تم إلغاء الاتصال بالخادم');
-        case DioExceptionType.badResponse:
-        return ServerError(dioError.response?.data??"يرجى المحاولة مجددا");
-
       case DioExceptionType.unknown:
         if (dioError.message!.contains('SocketException')) {
           return ServerError('لا يوجد اتصال بالإنترنت');
@@ -39,7 +37,7 @@ class ServerError extends CustomError {
   }
 
   factory ServerError.fromResponse(Response response) {
-    if ( response.statusCode != 200 ) {
+    if (response.statusCode != 200) {
       return ServerError(response.data);
     } else if (response.statusCode == 500) {
       return ServerError('خطأ في الخادم الداخلي، يرجى المحاولة لاحقاً');
