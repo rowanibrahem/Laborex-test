@@ -21,7 +21,6 @@ class RemoteRepo {
       return await action();
     } catch (error) {
       if (error is DioException) {
-        print(error.response);
         throw ServerError.fromDioError(error);
       } else if (error is CustomError) {
         rethrow;
